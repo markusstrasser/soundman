@@ -1,0 +1,168 @@
+<html>
+<body>
+
+</body>
+</html>
+<body id='bod' onload="load()">
+
+<style>
+    body {
+        display: flex;
+        justify-content: flex-end;
+        flex-direction: column-reverse;
+    }
+
+</style>
+<head>
+    <canvas id="canvBG" ></canvas>
+    <canvas id="canvPlayer" ></canvas>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+
+        #canvBG {
+            background-color: #000;
+            z-index: -1;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            margin: 0px;
+        }
+
+        #canvPlayer {
+            background-color: transparent;
+            z-index: 0;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+        }
+
+
+    </style>
+    <script type="text/javascript">
+
+
+
+
+        const GAME = {
+            pitchRange: 5
+        }
+
+        const player = {
+            head: {
+                //x y
+            }
+        }
+
+        flies = []
+
+        //BG
+        //fade over BG
+        //flies --x pos
+
+
+        //PLAYER
+        //calc Y of all rectangles (bones)
+        //keyboard events
+        //draw
+
+        //  grow
+        //shrink
+        //fluctuating timer 1s
+
+
+        //hardcode 12 neck Rects?
+        //dynamically adjust maxrects for pitchrange
+
+        const playerX = 150;
+        const smartRect = {
+            number: 1,
+            y: 300,
+            w: 120, //w stays constant
+            h: 100,
+            color: "red"
+
+        }
+
+        const dummy = [];
+        dummy.length = 5;
+        dummy.fill(smartRect)
+
+        //TODO abstract value giver FN
+
+        // height = end -startneck ) / count or range
+        // YPOS = order * height ) + startNeck
+        const calcKinetics = function (sR, number) {
+            const c = Object.assign({}, sR); // != (sR, {})
+            return Object.assign(c, {nr: number, y: number * c.h}) //2nd overwrites first;
+        }
+
+        const neckRects = dummy.map((rect, nr) => Object.assign(Object.assign({}, rect), {nr, y: nr * rect.h})) //ES6, make sure no mutations!
+
+        console.log(neckRects)
+        const drawRect = function (rectData, ctx, x) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
+            const r = Object.assign({}, rectData)
+            ctx.beginPath();
+            ctx.fillStyle = rectData.color;
+            ctx.rect(
+                x,
+                r.y,
+                r.w,
+                r.h
+            )
+            ctx.fill();
+        }
+
+        //numberToHSLa
+
+        const startNeck = 200; //uper edge posY of chest rect
+        let endNeck = 800; //bottom edge of head
+
+
+//        const resizeCanvas() {}
+
+        neckTimer = 0;
+        const loop = function () {
+            requestAnimationFrame(loop);
+            neckTimer++;
+            if (neckTimer % 30 == 0) {
+                drawRect(neckRects[])
+            }
+
+        }
+
+
+
+
+        function load() {
+            const canvasPlayer = document.getElementById("canvPlayer")
+            const canvasBG = document.getElementById("canvBG")
+            var ctxPlayer = canvasPlayer.getContext("2d");
+            var ctxBG = canvasBG.getContext("2d");
+
+            canvasBG.width = window.innerWidth;
+            canvasBG.height = window.innerHeight;
+            canvasPlayer.width = window.innerWidth;
+            canvasPlayer.height = window.innerHeight;
+
+            ctxPlayer.translate(0, canvasPlayer.height);
+            ctxPlayer.scale(1, -1);
+
+            ctxBG.translate(0, canvasBG.height);
+            ctxBG.scale(1, -1);
+
+            ctxPlayer.fillStyle = 'white';
+
+
+            ctxPlayer.rect(0, 0, 100, 100)
+            ctxPlayer.fill()
+
+            drawRect(neckRects[1], ctxPlayer, playerX)
+
+
+        }
+    </script>
+</head>
+</body>
+
