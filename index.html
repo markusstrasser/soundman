@@ -77,7 +77,6 @@
 
         const playerX = 150;
         const smartRect = {
-            number: 1,
             y: 300,
             w: 120, //w stays constant
             h: 100,
@@ -86,19 +85,18 @@
         }
 
         const dummy = [];
-        dummy.length = 5;
+        dummy.length = 50;
         dummy.fill(smartRect)
 
         //TODO abstract value giver FN
 
         // height = end -startneck ) / count or range
         // YPOS = order * height ) + startNeck
-        const calcKinetics = function (sR, number) {
-            const c = Object.assign({}, sR); // != (sR, {})
-            return Object.assign(c, {nr: number, y: number * c.h}) //2nd overwrites first;
-        }
+//
+        const startNeck = 200; //uper edge posY of chest rect
+        let endNeck = 800; //bottom edge of head
 
-        const neckRects = dummy.map((rect, nr) => Object.assign(Object.assign({}, rect), {nr, y: nr * rect.h})) //ES6, make sure no mutations!
+        const neckRects = dummy.map((rect, idx) => Object.assign(Object.assign({}, rect), {nr: idx, y: startNeck + idx * rect.h})) //ES6, make sure no mutations!
 
         console.log(neckRects)
         const drawRect = function (rectData, ctx, x) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
@@ -116,52 +114,124 @@
 
         //numberToHSLa
 
-        const startNeck = 200; //uper edge posY of chest rect
-        let endNeck = 800; //bottom edge of head
 
 
-//        const resizeCanvas() {}
-
-        neckTimer = 0;
-        const loop = function () {
-            requestAnimationFrame(loop);
-            neckTimer++;
-            if (neckTimer % 30 == 0) {
-                drawRect(neckRects[])
-            }
-
+        const rectNrtoY = function (nr, rectCount, start, finish) {
+            const range = finish - start;
+            const steps = range/rectCount
+            return (steps * nr) + start - 20;
         }
 
 
 
+//        const resizeCanvas() {}
+//        for (let rect of neckRects) {
+//            rect.y =
+//        }
+
+        console.log(neckRects)
+
+        let neckTimer = 0;
+        const skipFrames = 10;
+        let oldHeight;
+        let newHeight;
+        let stepSize;
+        let endNeckMem = endNeck;
+        const loop = function () {
+            requestAnimationFrame(loop);
+
+            for (let rect of neckRects) {
+
+                rect.y = rectNrtoY(rect.nr, neckRects.length, startNeck, endNeck)
+
+                newHeight = (endNeck - startNeck) / neckRects.length * 0.8;
+                stepSize = newHeight/ 30;
+            }
+            if (endNeckMem !== endNeck) {
+                ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
+                neckTimer = 0;
+                for (let rect of neckRects) {
+                    if (rect.h > newHeight) {
+                        rect.h -= stepSize;
+                    }
+                    else if (rect.h < newHeight) {
+                        rect.h += stepSize;
+                    }
+                    drawRect(rect, ctxPlayer, playerX)
+
+                    if (rect.h / newHeight > 0.9 && rect.h/newHeight < 1.2) {
+                        endNeckMem = endNeck;
+                    }
+                }
+
+            }
+
+            const rectIdx = Math.round(neckTimer/(skipFrames));
+            if (neckTimer % skipFrames === 0 && rectIdx < neckRects.length) {
+                //drawRect(rect, ctxPlayer, playerX)
+
+
+            }
+            neckTimer++;
+        }
+
+        const canvasPlayer = document.getElementById("canvPlayer")
+        const canvasBG = document.getElementById("canvBG")
+        const ctxPlayer = canvasPlayer.getContext("2d");
+        const ctxBG = canvasBG.getContext("2d");
+
+
 
         function load() {
-            const canvasPlayer = document.getElementById("canvPlayer")
-            const canvasBG = document.getElementById("canvBG")
-            var ctxPlayer = canvasPlayer.getContext("2d");
-            var ctxBG = canvasBG.getContext("2d");
 
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
             canvasPlayer.height = window.innerHeight;
-
             ctxPlayer.translate(0, canvasPlayer.height);
             ctxPlayer.scale(1, -1);
-
             ctxBG.translate(0, canvasBG.height);
             ctxBG.scale(1, -1);
 
             ctxPlayer.fillStyle = 'white';
-
-
             ctxPlayer.rect(0, 0, 100, 100)
             ctxPlayer.fill()
 
-            drawRect(neckRects[1], ctxPlayer, playerX)
+            oldHeight = neckRects[0].h;
+            loop()
+        }
 
+        const handleInput = function (inputCode) {
+            switch (inputCode) {
+                case 49:
+                    return 1;
+
+                case 50:
+                    return 2;
+
+                case 52:
+                    return 4;
+
+                case 54:
+                    return 6;
+
+                case 57:
+                    return 9;
+
+                default: return null;
+            }
 
         }
+
+        window.addEventListener("keydown", function(ev) {
+            console.log(ev.keyCode)
+            endNeck = handleInput(ev.keyCode) * 100;
+        })
+
+        //        const calcKinetics = function (sR, number) {
+        //            const c = Object.assign({}, sR); // != (sR, {})
+        //            return Object.assign(c, {nr: number, y: number * c.h}) //2nd overwrites first;
+        //        }
     </script>
 </head>
 </body>
