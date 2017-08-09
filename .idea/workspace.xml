@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94e1f05e-fff9-4fcd-aac2-771b4383b53d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -20,8 +19,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="968">
-              <caret line="112" column="28" lean-forward="false" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+            <state relative-caret-position="623">
+              <caret line="162" column="45" lean-forward="false" selection-start-line="162" selection-start-column="45" selection-end-line="162" selection-end-column="45" />
               <folding>
                 <element signature="n#html#0;n#!!top" expanded="false" />
                 <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -30,11 +29,21 @@
                 <element signature="e#317#351#0" expanded="false" />
                 <element signature="e#369#548#0" expanded="false" />
                 <element signature="e#570#730#0" expanded="false" />
-                <element signature="e#1157#1224#0" expanded="false" />
-                <element signature="e#1177#1214#0" expanded="false" />
-                <element signature="e#4834#5451#0" expanded="false" />
-                <element signature="e#5623#5677#0" expanded="false" />
+                <element signature="e#2063#2130#0" expanded="false" />
+                <element signature="e#2083#2120#0" expanded="false" />
+                <element signature="e#5085#5702#0" expanded="false" />
+                <element signature="e#5935#6366#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-641">
+              <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -42,8 +51,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="323" column="32" lean-forward="false" selection-start-line="323" selection-start-column="26" selection-end-line="323" selection-end-column="32" />
+            <state relative-caret-position="1448">
+              <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -59,6 +68,10 @@
       <find>Y</find>
       <find>keybox</find>
       <find>currenty</find>
+      <find>draw</find>
+      <find>rectnr</find>
+      <find>numberto</find>
+      <find>necktange</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -182,12 +195,12 @@
       <workItem from="1502082499348" duration="16812000" />
       <workItem from="1502176931274" duration="580000" />
       <workItem from="1502211480554" duration="537000" />
-      <workItem from="1502259531369" duration="6746000" />
+      <workItem from="1502259531369" duration="9591000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25391000" />
+    <option name="totallyTimeSpent" value="28236000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1903" height="960" extended-state="0" />
@@ -242,10 +255,10 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#1157#1224#0" expanded="false" />
-            <element signature="e#1177#1214#0" expanded="false" />
-            <element signature="e#4834#5451#0" expanded="false" />
-            <element signature="e#5623#5677#0" expanded="false" />
+            <element signature="e#2063#2130#0" expanded="false" />
+            <element signature="e#2083#2120#0" expanded="false" />
+            <element signature="e#5085#5702#0" expanded="false" />
+            <element signature="e#5935#6366#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -270,10 +283,10 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#1157#1224#0" expanded="false" />
-            <element signature="e#1177#1214#0" expanded="false" />
-            <element signature="e#4834#5451#0" expanded="false" />
-            <element signature="e#5623#5677#0" expanded="false" />
+            <element signature="e#2063#2130#0" expanded="false" />
+            <element signature="e#2083#2120#0" expanded="false" />
+            <element signature="e#5085#5702#0" expanded="false" />
+            <element signature="e#5935#6366#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -298,10 +311,10 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#1157#1224#0" expanded="false" />
-            <element signature="e#1177#1214#0" expanded="false" />
-            <element signature="e#4834#5451#0" expanded="false" />
-            <element signature="e#5623#5677#0" expanded="false" />
+            <element signature="e#2063#2130#0" expanded="false" />
+            <element signature="e#2083#2120#0" expanded="false" />
+            <element signature="e#5085#5702#0" expanded="false" />
+            <element signature="e#5935#6366#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -325,16 +338,24 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="323" column="32" lean-forward="false" selection-start-line="323" selection-start-column="26" selection-end-line="323" selection-end-column="32" />
+        <state relative-caret-position="1448">
+          <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-641">
+          <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="968">
-          <caret line="112" column="28" lean-forward="false" selection-start-line="112" selection-start-column="28" selection-end-line="112" selection-end-column="28" />
+        <state relative-caret-position="623">
+          <caret line="162" column="45" lean-forward="false" selection-start-line="162" selection-start-column="45" selection-end-line="162" selection-end-column="45" />
           <folding>
             <element signature="n#html#0;n#!!top" expanded="false" />
             <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -343,10 +364,10 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#1157#1224#0" expanded="false" />
-            <element signature="e#1177#1214#0" expanded="false" />
-            <element signature="e#4834#5451#0" expanded="false" />
-            <element signature="e#5623#5677#0" expanded="false" />
+            <element signature="e#2063#2130#0" expanded="false" />
+            <element signature="e#2083#2120#0" expanded="false" />
+            <element signature="e#5085#5702#0" expanded="false" />
+            <element signature="e#5935#6366#0" expanded="false" />
           </folding>
         </state>
       </provider>

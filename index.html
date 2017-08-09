@@ -46,49 +46,19 @@
         const GAME = {
             pitchRange: 5,
             FPS: 60,
-
-            neckSpeed: 6,
-            neckParts: 10
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         }
 
         const NECK = {
             speed: 6,
             rectCount: 10,
-            startY: 200,
+            startY: 0,
             endY: 600
         }
-
-        const player = {
-            head: {
-                //x y
-            }
-        }
-
-        flies = []
-
-        //BG
-        //fade over BG
-        //flies --x pos
-
-
-        //PLAYER
-        //calc Y of all rectangles (bones)
-        //keyboard events
-        //draw
-
-        //  grow
-        //shrink
-        //fluctuating timer 1s
-
-
-        //hardcode 12 neck Rects?
-        //dynamically adjust maxrects for pitchrange
-
         const Rect = class {
-            constructor() {
+            constructor(numberInChain) {
                 //there is no startY ... set that were you use the class
-                this.numberInChain = 1 //1 = 1st from the bottom going up
+                this.numberInChain = numberInChain //1 = 1st from the bottom going up
                 this.percY = 1; //1 = 100% = top of the chain
                 this.y = 200;
                 this.goalY = 200;
@@ -107,23 +77,35 @@
                 return this.y;
             }
         }
+        const player = {
+            head: {
+                //x y
+            }
+        }
+
+        flies = []
+        let necktangles = [];
+        necktangles.length = NECK.rectCount;
+        necktangles.fill(1)
+        necktangles = necktangles.map((e,i) => new Rect(i))
+
+        //dynamically adjust maxrects for pitchrange
+
+
 
         //TODO deltaY -> /divide by timesteps
 
         const playerX = 150;
 
-        const rect = new Rect();
-        const f = [];
-
         //TODO abstract value giver FN
 
-        const drawRect = function (rect, ctx, x=playerX, padding=0.7) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
+        const drawRect = function (rect, ctx, x=playerX, padding=0.9) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
             const r = Object.assign({}, rect) //only properties
             ctx.beginPath();
             ctx.fillStyle = r.color;
             ctx.rect(
-                x,
-                r.y,
+                x - rect.w/2,
+                r.y - rect.h/2,
                 r.w,
                 r.h * padding
             )
@@ -142,10 +124,14 @@
             requestAnimationFrame(loop);
 
             ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
-            for (let rect of f) {
+            for (let rect of necktangles) {
                 rect.setGoalY(NECK.endY, NECK.rectCount)
-                rect.adjustY(10)
+                rect.adjustY(10);
+                rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
+                ctxPlayer.rotate(rect.degRot * Math.PI/180)
                 drawRect(rect, ctxPlayer)
+                ctxPlayer.rotate(-rect.degRot * Math.PI/180)
+
 
             }
         }
@@ -172,12 +158,15 @@
             ctxPlayer.fill()
 
 
-            for (let i = 0; i < NECK.rectCount; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
-                f[i] = new Rect();
-                f[i].numberInChain = i;
-                f[i].y = NECK.startY + i * f[i].h;
-                f[i].goalY = f[i].y;
-                drawRect(f[i], ctxPlayer)
+            for (let i = 0; i < necktangles.length; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
+                let rect = necktangles[i]
+                const rnd = Math.random() * 3;
+                rect.degRot = rnd;
+                rect.y = NECK.startY + rect.numberInChain * rect.h;
+                rect.goalY = rect.y;
+                rect.color = NumberToHSLa(rect.numberInChain % 12);
+                rect.w = rect.w - (5 * rect.numberInChain); //calcRectWidth
+                drawRect(rect, ctxPlayer)
             }
 
 
@@ -222,6 +211,22 @@
             console.log(ev.keyCode)
             NECK.endY = handleInput(ev.keyCode) * 100;
         })
+
+
+        function NumberToHSLa(number, s = "100%", l = "60%", a = 1) { //HSL is more intuitive then RGB s=100, l =60;
+            let num = number;
+            if (number > 12) {
+                num = number % 12;
+            }
+
+            let h = 360 - num * 360 / 12 + 60; //Hue goes gradually around (COUNTERCLOCK) the wheel at pitch '6' => 180deg
+            if (h == 360) {
+                h = 0;
+            }
+
+            return "hsla" + "(" + h + "," + s + "," + l + "," + a + ")";
+        }
+
 
         //        const calcKinetics = function (sR, number) {
         //            const c = Object.assign({}, sR); // != (sR, {})
