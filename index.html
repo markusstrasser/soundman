@@ -52,7 +52,7 @@
         const NECK = {
             speed: 6,
             rectCount: 10,
-            startY: 0,
+            startY: 200,
             endY: 600
         }
         const Rect = class {
@@ -66,9 +66,10 @@
                 this.h = 20;
                 this.color = "red";
             }
-            setGoalY(refY, partsInChain) {
-                const percY = this.numberInChain / partsInChain;
-                this.goalY = refY * percY;
+            setGoalY(data) {
+                const {start,end, count} = data;
+                const percY = this.numberInChain / count;
+                this.goalY = start + (end-start) * percY;
                 return this.goalY;
             }
             adjustY(inSteps) { //will approach, but not reach...abschwaechende curve
@@ -125,7 +126,7 @@
 
             ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
             for (let rect of necktangles) {
-                rect.setGoalY(NECK.endY, NECK.rectCount)
+                rect.setGoalY({start: NECK.startY, end: NECK.endY, count: NECK.rectCount})
                 rect.adjustY(10);
                 rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
                 ctxPlayer.rotate(rect.degRot * Math.PI/180)
