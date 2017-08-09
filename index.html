@@ -14,8 +14,8 @@
 
 </style>
 <head>
-    <canvas id="canvBG" ></canvas>
-    <canvas id="canvPlayer" ></canvas>
+    <canvas id="canvBG"></canvas>
+    <canvas id="canvPlayer"></canvas>
     <style type="text/css">
         body {
             margin: 0;
@@ -43,10 +43,20 @@
     <script type="text/javascript">
 
 
-
-
         const GAME = {
-            pitchRange: 5
+            pitchRange: 5,
+            FPS: 60,
+
+            neckSpeed: 6,
+            neckParts: 10
+            //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
+        }
+
+        const NECK = {
+            speed: 6,
+            rectCount: 10,
+            startY: 200,
+            endY: 600
         }
 
         const player = {
@@ -75,39 +85,47 @@
         //hardcode 12 neck Rects?
         //dynamically adjust maxrects for pitchrange
 
-        const playerX = 150;
-        const smartRect = {
-            y: 300,
-            w: 120, //w stays constant
-            h: 100,
-            color: "red"
-
+        const Rect = class {
+            constructor() {
+                //there is no startY ... set that were you use the class
+                this.numberInChain = 1 //1 = 1st from the bottom going up
+                this.percY = 1; //1 = 100% = top of the chain
+                this.y = 200;
+                this.goalY = 200;
+                this.w = 100;
+                this.h = 20;
+                this.color = "red";
+            }
+            setGoalY(refY, partsInChain) {
+                const percY = this.numberInChain / partsInChain;
+                this.goalY = refY * percY;
+                return this.goalY;
+            }
+            adjustY(inSteps) { //will approach, but not reach...abschwaechende curve
+                const delta = this.goalY - this.y; //linear: exchange currentY here with memory of y when it started
+                this.y += delta/inSteps;
+                return this.y;
+            }
         }
 
-        const dummy = [];
-        dummy.length = 50;
-        dummy.fill(smartRect)
+        //TODO deltaY -> /divide by timesteps
+
+        const playerX = 150;
+
+        const rect = new Rect();
+        const f = [];
 
         //TODO abstract value giver FN
 
-        // height = end -startneck ) / count or range
-        // YPOS = order * height ) + startNeck
-//
-        const startNeck = 200; //uper edge posY of chest rect
-        let endNeck = 800; //bottom edge of head
-
-        const neckRects = dummy.map((rect, idx) => Object.assign(Object.assign({}, rect), {nr: idx, y: startNeck + idx * rect.h})) //ES6, make sure no mutations!
-
-        console.log(neckRects)
-        const drawRect = function (rectData, ctx, x) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
-            const r = Object.assign({}, rectData)
+        const drawRect = function (rect, ctx, x=playerX, padding=0.7) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
+            const r = Object.assign({}, rect) //only properties
             ctx.beginPath();
-            ctx.fillStyle = rectData.color;
+            ctx.fillStyle = r.color;
             ctx.rect(
                 x,
                 r.y,
                 r.w,
-                r.h
+                r.h * padding
             )
             ctx.fill();
         }
@@ -115,71 +133,27 @@
         //numberToHSLa
 
 
+        //        const resizeCanvas() {}
+        //        for (let rect of neckRects) {
+        //            rect.y =
+        //        }
 
-        const rectNrtoY = function (nr, rectCount, start, finish) {
-            const range = finish - start;
-            const steps = range/rectCount
-            return (steps * nr) + start - 20;
-        }
-
-
-
-//        const resizeCanvas() {}
-//        for (let rect of neckRects) {
-//            rect.y =
-//        }
-
-        console.log(neckRects)
-
-        let neckTimer = 0;
-        const skipFrames = 10;
-        let oldHeight;
-        let newHeight;
-        let stepSize;
-        let endNeckMem = endNeck;
         const loop = function () {
             requestAnimationFrame(loop);
 
-            for (let rect of neckRects) {
-
-                rect.y = rectNrtoY(rect.nr, neckRects.length, startNeck, endNeck)
-
-                newHeight = (endNeck - startNeck) / neckRects.length * 0.8;
-                stepSize = newHeight/ 30;
-            }
-            if (endNeckMem !== endNeck) {
-                ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
-                neckTimer = 0;
-                for (let rect of neckRects) {
-                    if (rect.h > newHeight) {
-                        rect.h -= stepSize;
-                    }
-                    else if (rect.h < newHeight) {
-                        rect.h += stepSize;
-                    }
-                    drawRect(rect, ctxPlayer, playerX)
-
-                    if (rect.h / newHeight > 0.9 && rect.h/newHeight < 1.2) {
-                        endNeckMem = endNeck;
-                    }
-                }
+            ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
+            for (let rect of f) {
+                rect.setGoalY(NECK.endY, NECK.rectCount)
+                rect.adjustY(10)
+                drawRect(rect, ctxPlayer)
 
             }
-
-            const rectIdx = Math.round(neckTimer/(skipFrames));
-            if (neckTimer % skipFrames === 0 && rectIdx < neckRects.length) {
-                //drawRect(rect, ctxPlayer, playerX)
-
-
-            }
-            neckTimer++;
         }
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
-
 
 
         function load() {
@@ -197,7 +171,16 @@
             ctxPlayer.rect(0, 0, 100, 100)
             ctxPlayer.fill()
 
-            oldHeight = neckRects[0].h;
+
+            for (let i = 0; i < NECK.rectCount; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
+                f[i] = new Rect();
+                f[i].numberInChain = i;
+                f[i].y = NECK.startY + i * f[i].h;
+                f[i].goalY = f[i].y;
+                drawRect(f[i], ctxPlayer)
+            }
+
+
             loop()
         }
 
@@ -208,24 +191,36 @@
 
                 case 50:
                     return 2;
+                case 51:
+                    return 3;
 
                 case 52:
                     return 4;
 
+                case 53:
+                    return 5;
+
                 case 54:
                     return 6;
+
+                case 55:
+                    return 7;
+
+                case 56:
+                    return 8;
 
                 case 57:
                     return 9;
 
-                default: return null;
+                default:
+                    return 5;
             }
 
         }
 
-        window.addEventListener("keydown", function(ev) {
+        window.addEventListener("keydown", function (ev) {
             console.log(ev.keyCode)
-            endNeck = handleInput(ev.keyCode) * 100;
+            NECK.endY = handleInput(ev.keyCode) * 100;
         })
 
         //        const calcKinetics = function (sR, number) {
