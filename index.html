@@ -42,9 +42,17 @@
     </style>
     <script type="text/javascript">
 
+        /* EVENT LISTENERS */
+        window.addEventListener("keydown", function (ev) {
+            console.log(ev.keyCode)
+            NECK.endY = handleInput(ev.keyCode) * 100;
+        })
 
+
+
+        /* DECLARATIONS*/
         const GAME = {
-            pitchRange: 5,
+            pitchRange: 10,
             FPS: 60,
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         }
@@ -59,22 +67,23 @@
             constructor(numberInChain) {
                 //there is no startY ... set that were you use the class
                 this.numberInChain = numberInChain //1 = 1st from the bottom going up
-                this.percY = 1; //1 = 100% = top of the chain
                 this.y = 200;
                 this.goalY = 200;
                 this.w = 100;
                 this.h = 20;
                 this.color = "red";
             }
+
             setGoalY(data) {
-                const {start,end, count} = data;
+                const {start, end, count} = data;
                 const percY = this.numberInChain / count;
-                this.goalY = start + (end-start) * percY;
+                this.goalY = start + (end - start) * percY;
                 return this.goalY;
             }
+
             adjustY(inSteps) { //will approach, but not reach...abschwaechende curve
                 const delta = this.goalY - this.y; //linear: exchange currentY here with memory of y when it started
-                this.y += delta/inSteps;
+                this.y += delta / inSteps;
                 return this.y;
             }
         }
@@ -83,76 +92,88 @@
                 //x y
             }
         }
+        const head = new Rect(0.5);
+        head.w = 70;
+        head.h = head.w;
+        head.color = "white";
 
-        flies = []
-        let necktangles = [];
-        necktangles.length = NECK.rectCount;
-        necktangles.fill(1)
-        necktangles = necktangles.map((e,i) => new Rect(i))
+        const body = new Rect(0.5);
+        body.w = 100;
+        body.h = body.w*3/4;
+        body.color = "white";
+        body.y = 200;
 
-        //dynamically adjust maxrects for pitchrange
-
-
-
-        //TODO deltaY -> /divide by timesteps
-
-        const playerX = 150;
-
-        //TODO abstract value giver FN
-
-        const drawRect = function (rect, ctx, x=playerX, padding=0.9) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
-            const r = Object.assign({}, rect) //only properties
-            ctx.beginPath();
-            ctx.fillStyle = r.color;
-            ctx.rect(
-                x - rect.w/2,
-                r.y - rect.h/2,
-                r.w,
-                r.h * padding
-            )
-            ctx.fill();
+        const legL = {
+            w : body.w,
+            y: 120,
+            h: 120
         }
+        const legR = Object.assign({}, legL);
+        legR.w = legR.w * -1 //direction shift
 
-        //numberToHSLa
-
-
-        //        const resizeCanvas() {}
-        //        for (let rect of neckRects) {
-        //            rect.y =
-        //        }
-
-        const loop = function () {
-            requestAnimationFrame(loop);
-
-            ctxPlayer.clearRect(0,0, window.innerWidth, window.innerHeight)
-            for (let rect of necktangles) {
-                rect.setGoalY({start: NECK.startY, end: NECK.endY, count: NECK.rectCount})
-                rect.adjustY(10);
-                rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
-                ctxPlayer.rotate(rect.degRot * Math.PI/180)
-                drawRect(rect, ctxPlayer)
-                ctxPlayer.rotate(-rect.degRot * Math.PI/180)
-
-
-            }
-        }
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
 
+        ctxPlayer.lineCap = "round"
 
+        const canvi = [canvasPlayer, canvasBG]
+        const ctxes = [ctxPlayer, ctxBG]
+
+        flies = []
+        let necktangles = [];
+        necktangles.length = NECK.rectCount;
+        necktangles.fill(1)
+        necktangles = necktangles.map((e, i) => new Rect(i))
+        const playerX = 150;
+
+        //TODO abstract value giver FN
+
+
+        /*ACTION*/
+        const loop = function () {
+            requestAnimationFrame(loop);
+
+            ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight)
+            for (let rect of necktangles) {
+                rect.setGoalY({start: NECK.startY, end: NECK.endY, count: NECK.rectCount})
+                rect.adjustY(10);
+                rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
+                ctxPlayer.rotate(rect.degRot * Math.PI / 180)
+                drawRect(rect, ctxPlayer)
+                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
+            }
+            lastNeckBone = necktangles[necktangles.length-1]
+            head.y =  lastNeckBone.y + lastNeckBone.h/2 + head.h/2;  //the last neck
+            firstBone = necktangles[0];
+            body.y = firstBone.y -firstBone.h/2.4;
+            drawTrapezoid(body, ctxPlayer)
+            drawRect(head, ctxPlayer)
+
+            legL.y = body.y;
+            legL.h = legL.y;
+            legR.y = body.y;
+            legR.h = legL.y
+            drawTriangle(legL, ctxPlayer)
+            drawTriangle(legR, ctxPlayer)
+        }
         function load() {
 
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
             canvasPlayer.height = window.innerHeight;
-            ctxPlayer.translate(0, canvasPlayer.height);
-            ctxPlayer.scale(1, -1);
+//            ctxPlayer.translate(0, canvasPlayer.height);
+//            ctxPlayer.scale(1, -1);
+
+            //
+            ctxPlayer.setTransform(1,0,0,-1,0,canvasPlayer.height) //this way ==
+            //--that way :
             ctxBG.translate(0, canvasBG.height);
             ctxBG.scale(1, -1);
+            //
 
             ctxPlayer.fillStyle = 'white';
             ctxPlayer.rect(0, 0, 100, 100)
@@ -174,6 +195,8 @@
             loop()
         }
 
+
+        /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
             switch (inputCode) {
                 case 49:
@@ -208,12 +231,66 @@
 
         }
 
-        window.addEventListener("keydown", function (ev) {
-            console.log(ev.keyCode)
-            NECK.endY = handleInput(ev.keyCode) * 100;
-        })
+        let xr =4;
+        const drawTriangle = function(data, ctx, x=playerX) {
+            ctx.beginPath();
+
+            const {w,y,h} = data;
+//            ctx.translate(x, (y/2))
+//
+//            ctx.rotate(xr * Math.PI / 180);
 
 
+            ctx.moveTo(x-w/2.4, y);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x-w/3, y-h);
+            ctx.fillStyle ="white";
+
+            ctx.fill();
+//            ctx.rotate(-xr * Math.PI / 180)
+//            ctx.translate(-x, -(y/2))
+
+//            ctxPlayer.setTransform(1,0,0,-1,0,canvasPlayer.height) //this way ==
+
+
+        }
+
+        const drawTrapezoid = function (data,ctx, x=playerX) {
+            ctx.beginPath();
+
+            const {y, w, h} = data;
+            ctx.moveTo(x-w/2, y);
+            ctx.lineTo(x+w/2, y);
+            ctx.lineTo(x+w/5, y-h);
+            ctx.lineTo(x-w/5, y-h);
+            ctx.fillStyle ="white";
+            ctx.fill();
+        }
+        const drawRect = function (rect, ctx, x = playerX, padding = 1.1) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
+            const r = Object.assign({}, rect) //only properties
+            ctx.beginPath();
+            ctx.fillStyle = r.color;
+            ctx.rect(
+                x - rect.w / 2,
+                r.y - rect.h / 2,
+                r.w,
+                r.h * padding
+            )
+            ctx.fill();
+        }
+
+
+
+        const gameUnitsToPixel = function (number) {
+                return number* window.innerWidth/100
+
+//            else  if (dimension === "h") {
+//                return number* window.innerHeight/100
+//            }
+//            else {
+//                throw UserException("No Dimension specified")
+//            }
+        }
         function NumberToHSLa(number, s = "100%", l = "60%", a = 1) { //HSL is more intuitive then RGB s=100, l =60;
             let num = number;
             if (number > 12) {
@@ -232,7 +309,21 @@
         //        const calcKinetics = function (sR, number) {
         //            const c = Object.assign({}, sR); // != (sR, {})
         //            return Object.assign(c, {nr: number, y: number * c.h}) //2nd overwrites first;
+
+
         //        }
+
+
+        //        window.addEventListener('resize', function() {
+        //            canvi.map(e=> resizeCanvas(e))
+        //            ctxes.map(e => translateCtx(e))
+        //        });
+        //
+        //        const resizeCanvas = function (canvas) {
+        //            canvas.width = window.innerWidth;
+        //            canvas.height = window.innerHeight;
+        //        }
+
     </script>
 </head>
 </body>
