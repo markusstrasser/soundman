@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="94e1f05e-fff9-4fcd-aac2-771b4383b53d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/canvasTransfromExample.html" afterPath="$PROJECT_DIR$/canvasTransfromExample.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -20,8 +21,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="545">
-              <caret line="243" column="30" lean-forward="false" selection-start-line="243" selection-start-column="30" selection-end-line="243" selection-end-column="30" />
+            <state relative-caret-position="259">
+              <caret line="313" column="100" lean-forward="false" selection-start-line="313" selection-start-column="100" selection-end-line="313" selection-end-column="100" />
               <folding>
                 <element signature="n#html#0;n#!!top" expanded="false" />
                 <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -30,9 +31,7 @@
                 <element signature="e#317#351#0" expanded="false" />
                 <element signature="e#369#548#0" expanded="false" />
                 <element signature="e#570#730#0" expanded="false" />
-                <element signature="e#5847#6464#0" expanded="false" />
-                <element signature="e#7942#8225#0" expanded="false" />
-                <element signature="e#8294#8725#0" expanded="false" />
+                <element signature="e#9527#9809#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -41,8 +40,8 @@
       <file leaf-file-name="canvasTransfromExample.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+            <state relative-caret-position="616">
+              <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -92,7 +91,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds">
     <option name="y" value="23" />
     <option name="width" value="1903" />
     <option name="height" value="960" />
@@ -129,6 +128,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -141,7 +141,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -192,18 +191,20 @@
       <workItem from="1502366257040" duration="541000" />
       <workItem from="1502368444299" duration="321000" />
       <workItem from="1502377869597" duration="4053000" />
-      <workItem from="1502436311927" duration="5195000" />
+      <workItem from="1502436311927" duration="5296000" />
+      <workItem from="1502474301066" duration="10000" />
+      <workItem from="1502474314487" duration="2983000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="38900000" />
+    <option name="totallyTimeSpent" value="41994000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1920" height="976" extended-state="6" />
+    <frame x="0" y="23" width="1903" height="960" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14739583" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1471361" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -244,44 +245,15 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
+    <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="n#html#0;n#!!top" expanded="false" />
-            <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
-            <element signature="e#81#186#0" expanded="false" />
-            <element signature="n#style#0;n#head#0;n#body#0;n#!!top" expanded="false" />
-            <element signature="e#317#351#0" expanded="false" />
-            <element signature="e#369#548#0" expanded="false" />
-            <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5175">
-          <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4725">
-          <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
+        <state relative-caret-position="345">
+          <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -298,25 +270,15 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
+    <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5175">
-          <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4725">
-          <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
+        <state relative-caret-position="345">
+          <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
           <folding />
         </state>
       </provider>
@@ -333,9 +295,24 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#html#0;n#!!top" expanded="false" />
+            <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
+            <element signature="e#81#186#0" expanded="false" />
+            <element signature="n#style#0;n#head#0;n#body#0;n#!!top" expanded="false" />
+            <element signature="e#317#351#0" expanded="false" />
+            <element signature="e#369#548#0" expanded="false" />
+            <element signature="e#570#730#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -344,7 +321,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5175">
           <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -352,7 +328,68 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4725">
           <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
-          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#html#0;n#!!top" expanded="false" />
+            <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
+            <element signature="e#81#186#0" expanded="false" />
+            <element signature="n#style#0;n#head#0;n#body#0;n#!!top" expanded="false" />
+            <element signature="e#317#351#0" expanded="false" />
+            <element signature="e#369#548#0" expanded="false" />
+            <element signature="e#570#730#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5175">
+          <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4725">
+          <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="n#html#0;n#!!top" expanded="false" />
+            <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
+            <element signature="e#81#186#0" expanded="false" />
+            <element signature="n#style#0;n#head#0;n#body#0;n#!!top" expanded="false" />
+            <element signature="e#317#351#0" expanded="false" />
+            <element signature="e#369#548#0" expanded="false" />
+            <element signature="e#570#730#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/visual-pitch/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5175">
+          <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4725">
+          <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
         </state>
       </provider>
     </entry>
@@ -376,9 +413,7 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -403,9 +438,7 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -430,9 +463,7 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -458,7 +489,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="811">
           <caret line="345" column="46" lean-forward="false" selection-start-line="345" selection-start-column="38" selection-end-line="345" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -466,22 +496,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="797">
           <caret line="315" column="46" lean-forward="false" selection-start-line="315" selection-start-column="38" selection-end-line="315" selection-end-column="46" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="35" selection-end-line="23" selection-end-column="35" />
+        <state relative-caret-position="616">
+          <caret line="47" column="0" lean-forward="true" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="545">
-          <caret line="243" column="30" lean-forward="false" selection-start-line="243" selection-start-column="30" selection-end-line="243" selection-end-column="30" />
+        <state relative-caret-position="259">
+          <caret line="313" column="100" lean-forward="false" selection-start-line="313" selection-start-column="100" selection-end-line="313" selection-end-column="100" />
           <folding>
             <element signature="n#html#0;n#!!top" expanded="false" />
             <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -490,9 +519,7 @@
             <element signature="e#317#351#0" expanded="false" />
             <element signature="e#369#548#0" expanded="false" />
             <element signature="e#570#730#0" expanded="false" />
-            <element signature="e#5847#6464#0" expanded="false" />
-            <element signature="e#7942#8225#0" expanded="false" />
-            <element signature="e#8294#8725#0" expanded="false" />
+            <element signature="e#9527#9809#0" expanded="false" />
           </folding>
         </state>
       </provider>
