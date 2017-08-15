@@ -71,7 +71,9 @@
                 this.goalY = 200;
                 this.w = 100;
                 this.h = 20;
+                this.x = 150;
                 this.color = "red";
+                this.localRotation = 10; //gets inverted @ rotateFN ==> prefer clockwise
             }
 
             setGoalY(data) {
@@ -86,7 +88,39 @@
                 this.y += delta / inSteps;
                 return this.y;
             }
+
+            localRotate(ctx = ctxPlayer) {
+                ctx.translate(this.x, this.y)
+                ctx.rotate(-this.localRotation * Math.PI / 180)
+                ctx.translate(-(this.x), -(this.y))
+
+//                drawRect(box, ctxPlayer, playerX + 200);
+            }
+
+            drawMe(ctx = ctxPlayer, padding = 1.1) {
+                ctx.beginPath();
+                ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange));
+                ;
+
+                ctx.save();
+
+                this.localRotate();
+
+                ctx.rect(
+                    this.x - this.w / 2,
+                    this.y - this.h / 2,
+                    this.w,
+                    this.h * padding
+                )
+
+                ctx.fill();
+                ctx.closePath();
+                ctx.restore()
+            }
         }
+
+        const box = new Rect(0.5);
+
         const player = {
             head: {
                 //x y
@@ -129,9 +163,11 @@
         necktangles.fill(1)
         necktangles = necktangles.map((e, i) => new Rect(i))
         const playerX = 150;
+        necktangles[4].degRot = 30;
+
 
         //TODO abstract value giver FN
-
+        let winkel = 10;
         const mouthAnim = function (time) {
             return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
         }
@@ -147,10 +183,18 @@
                 rect.setGoalY({start: NECK.startY, end: NECK.endY, count: NECK.rectCount})
                 rect.adjustY(10);
                 rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
+                ctxPlayer.save()
+//                ctxPlayer.translate(playerX, rect.y)
                 ctxPlayer.rotate(rect.degRot * Math.PI / 180)
-                drawRect(rect, ctxPlayer)
-                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
+
+
+                rect.drawMe();
+//                drawRect(rect, ctxPlayer)
+                ctxPlayer.restore();
+//                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
             }
+
+
             lastNeckBone = necktangles[necktangles.length - 1]
             head.y = lastNeckBone.y + lastNeckBone.h / 2 + head.h / 2;  //the last neck
             head.mouthHeight = mouthAnim(timer)
@@ -168,6 +212,7 @@
 
             drawTriangle(legL, ctxPlayer)
             drawTriangle(legR, ctxPlayer)
+
         }
 
         function load() {
@@ -311,7 +356,8 @@
         const drawRect = function (rect, ctx, x = playerX, padding = 1.1) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
             const r = Object.assign({}, rect) //only properties
             ctx.beginPath();
-            ctx.fillStyle = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));;
+            ctx.fillStyle = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));
+            ;
             ctx.rect(
                 x - rect.w / 2,
                 r.y - rect.h / 2,
@@ -324,7 +370,6 @@
 
         const gameUnitsToPixel = function (number) {
             return number * window.innerWidth / 100
-
 //            else  if (dimension === "h") {
 //                return number* window.innerHeight/100
 //            }
