@@ -47,6 +47,20 @@
             console.log(ev.keyCode)
             NECK.endY = handleInput(ev.keyCode) * 100;
         })
+        window.addEventListener("keypress", function (ev) {
+            console.log(ev.keyCode)
+            if (ev.keyCode === 32) {
+                head.fireOn = true;
+            }
+        })
+
+        window.addEventListener("keyup", function (ev) {
+            console.log(ev.keyCode)
+            if (ev.keyCode === 32) {
+                head.fireOn = false;
+                head.fireTimer = 0;
+            }
+        })
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
@@ -189,7 +203,63 @@
 
             ctx.fillRect(x + w / 4, y - 30 - mouthHeight / 2, w / 4, mouthHeight)
         };
-        
+        head.fireTimer = 0;
+        head.stack = 5;
+        head.fireOn = false;
+
+        head.fire = function (ctx = ctxPlayer) {
+            //draw 10 triangles
+            //have a ticker....reset after 200 ticks
+            //next triangel ? ticks % 30
+            //recursive shit?
+            const that = this;
+            this.fireTimer++;
+            const mouth = {
+                x: this.x + this.w / 3,
+                y: this.y - this.h / 2.3,
+            }
+            const data = {
+                x: this.x + this.w / 2,
+
+                h: 40,
+                w: 80,
+                color: "blue"
+            }
+
+            const colY = yToPitch(that.y, GAME.endY, NECK.startY, GAME.pitchRange);
+
+
+            function spit(mouthX, mouthY, h, stack = that.stack) {
+                ctx.beginPath();
+                const w = data.w;
+                ctx.moveTo(mouthX, mouthY);
+                ctx.lineTo(mouthX + w / 2, mouthY - h / 7);
+                ctx.lineTo(mouthX + w / 2, mouthY + h / 7);
+                ctx.fillStyle = NumberToHSLa(colY + Math.random()*2,`${5/stack * 20 * Math.random()}%`) ;
+                ctx.closePath()
+                ctx.fill();
+
+                let rounds = Math.floor(that.fireTimer / 20)
+
+                for (let i = 0; i < rounds; i++) {
+                    stack--;
+                    if (stack > 0) { //iteration is better
+                        spit(mouthX + 20 * i, mouthY, h + i *40, stack)
+                    }
+                    else {
+                        if (that.fireTimer > 200) {
+                            that.fireTimer = 0;
+                            that.fireOn = false;
+                        }
+                        that.stack = 5;
+                    }
+                }
+            }
+
+            spit(mouth.x, mouth.y, data.h)
+
+        }
+
 
         const body = new Rect({
             numberInChain: 0.5,
@@ -215,8 +285,6 @@
         necktangles.fill(1)
         necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}))
         const playerX = 150;
-        necktangles[4].degRot = 30;
-
 
         //TODO abstract value giver FN
         const mouthAnim = function (time) {
@@ -245,7 +313,11 @@
 //                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
             }
 
-            head.drawMe()
+            head.drawMe();
+
+            if (head.fireOn) {
+                head.fire();
+            }
 
 
             lastNeckBone = necktangles[necktangles.length - 1]
@@ -296,10 +368,8 @@
                 rect.goalY = rect.y;
                 rect.color = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));
                 rect.w = rect.w - (5 * rect.numberInChain); //calcRectWidth
-                drawRect(rect, ctxPlayer)
+                rect.drawMe();
             }
-
-
             loop()
         }
 
@@ -348,28 +418,14 @@
 
         }
 
-        let xr = 4;
         const drawTriangle = function (data, ctx, x = playerX) {
             ctx.beginPath();
-
             const {w, y, h} = data;
-//            ctx.translate(x, (y/2))
-//
-//            ctx.rotate(xr * Math.PI / 180);
-
-
             ctx.moveTo(x - w / 2.4, y);
             ctx.lineTo(x, y);
             ctx.lineTo(x - w / 3, y - h);
-            ctx.fillStyle = "white";
-
+            ctx.fillStyle = data.color || "white";
             ctx.fill();
-//            ctx.rotate(-xr * Math.PI / 180)
-//            ctx.translate(-x, -(y/2))
-
-//            ctxPlayer.setTransform(1,0,0,-1,0,canvasPlayer.height) //this way ==
-
-
         }
 
         const drawTrapezoid = function (data, ctx, x = playerX) {
@@ -380,19 +436,6 @@
             ctx.lineTo(x + w / 5, y - h);
             ctx.lineTo(x - w / 5, y - h);
             ctx.fillStyle = "white";
-            ctx.fill();
-        }
-        const drawRect = function (rect, ctx, x = playerX, padding = 1.1) { //delay this ...sequence matters. If (isGoingUp) else resize height &y dynamically except non-neck rectangles
-            const r = Object.assign({}, rect) //only properties
-            ctx.beginPath();
-            ctx.fillStyle = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));
-            ;
-            ctx.rect(
-                x - rect.w / 2,
-                r.y - rect.h / 2,
-                r.w,
-                r.h * padding
-            )
             ctx.fill();
         }
 
