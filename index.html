@@ -48,7 +48,15 @@
             NECK.endY = handleInput(ev.keyCode) * 100;
         })
 
+        const canvasPlayer = document.getElementById("canvPlayer")
+        const canvasBG = document.getElementById("canvBG")
+        const ctxPlayer = canvasPlayer.getContext("2d");
+        const ctxBG = canvasBG.getContext("2d");
 
+        ctxPlayer.lineCap = "round"
+
+        const canvi = [canvasPlayer, canvasBG]
+        const ctxes = [ctxPlayer, ctxBG]
         /* DECLARATIONS*/
         const GAME = {
             pitchRange: 10,
@@ -88,30 +96,53 @@
                 this.y += delta / inSteps;
                 return this.y;
             }
+            moveTo() {
 
+            }
+            incrementPos() {
+
+            }
             localRotate(ctx = ctxPlayer) {
                 ctx.translate(this.x, this.y)
                 ctx.rotate(-this.localRotation * Math.PI / 180)
                 ctx.translate(-(this.x), -(this.y))
-
 //                drawRect(box, ctxPlayer, playerX + 200);
+            }
+            blueprint() {
+                const {x, y, w, h} = this;
+                const blueprint = [{
+                    method: "rect",
+                    vertices: [
+                        x - w / 2,
+                        y - h / 2,
+                        w,
+                        h
+                    ]
+                }]
+                return blueprint;
+            }
+
+            modifyDNA() {
+            }
+
+            executeBP(blueprint, ctx = ctxPlayer) {
+                const bp = blueprint.slice();
+
+                const commands = bp.map(instruct => function () {
+                    return ctx[instruct.method](...instruct.vertices)
+                })
+                return commands;
             }
 
             drawMe(ctx = ctxPlayer, padding = 1.1) {
+                this.drawFns = this.executeBP(this.blueprint())
                 ctx.beginPath();
                 ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange));
-                ;
-
                 ctx.save();
 
                 this.localRotate();
 
-                ctx.rect(
-                    this.x - this.w / 2,
-                    this.y - this.h / 2,
-                    this.w,
-                    this.h * padding
-                )
+                this.drawFns.map(f => f());
 
                 ctx.fill();
                 ctx.closePath();
@@ -147,16 +178,6 @@
         legR.w = legR.w * -1 //direction shift
 
 
-        const canvasPlayer = document.getElementById("canvPlayer")
-        const canvasBG = document.getElementById("canvBG")
-        const ctxPlayer = canvasPlayer.getContext("2d");
-        const ctxBG = canvasBG.getContext("2d");
-
-        ctxPlayer.lineCap = "round"
-
-        const canvi = [canvasPlayer, canvasBG]
-        const ctxes = [ctxPlayer, ctxBG]
-
         flies = []
         let necktangles = [];
         necktangles.length = NECK.rectCount;
@@ -185,7 +206,7 @@
                 rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
                 ctxPlayer.save()
 //                ctxPlayer.translate(playerX, rect.y)
-                ctxPlayer.rotate(rect.degRot * Math.PI / 180)
+                rect.localRotation = Math.random() * 30;
 
 
                 rect.drawMe();
