@@ -72,9 +72,9 @@
             endY: 600
         }
         const Rect = class {
-            constructor(numberInChain) {
+            constructor(presets) {
                 //there is no startY ... set that were you use the class
-                this.numberInChain = numberInChain //1 = 1st from the bottom going up
+//                this.numberInChain = numberInChain //1 = 1st from the bottom going up
                 this.y = 200;
                 this.goalY = 200;
                 this.w = 100;
@@ -82,6 +82,11 @@
                 this.x = 150;
                 this.color = "red";
                 this.localRotation = 10; //gets inverted @ rotateFN ==> prefer clockwise
+                Object.assign(this, presets) //merge into what's left
+            }
+
+            tick() {
+
             }
 
             setGoalY(data) {
@@ -96,18 +101,22 @@
                 this.y += delta / inSteps;
                 return this.y;
             }
+
             moveTo() {
 
             }
+
             incrementPos() {
 
             }
+
             localRotate(ctx = ctxPlayer) {
                 ctx.translate(this.x, this.y)
                 ctx.rotate(-this.localRotation * Math.PI / 180)
                 ctx.translate(-(this.x), -(this.y))
 //                drawRect(box, ctxPlayer, playerX + 200);
             }
+
             blueprint() {
                 const {x, y, w, h} = this;
                 const blueprint = [{
@@ -149,25 +158,47 @@
                 ctx.restore()
             }
         }
+        const head = new Rect({
+            x: 150,
+            y: 600,
+            w: 90,
+            h: 70,
+            color: "white",
+            mouthHeight: 5
+        });
 
-        const box = new Rect(0.5);
+        head.drawMe = function (ctx = ctxPlayer) { //override
+            const {x, y, w, h, mouthHeight} = this;
+            ctx.beginPath();
+            ctx.moveTo(x - w / 2, y - h / 2)
+            ctx.lineTo(x - w / 3, y)
+            ctx.lineTo(x - w / 2, y + h / 2)
+            ctx.lineTo(x + w / 2, y + h / 1.5)
+            ctx.lineTo(x + w / 2, y - h / 1.5)
+            ctx.fillStyle = "white"
+            //nose
+            ctx.moveTo(x + w / 2, y - 12)
+            ctx.lineTo(x + w / 2 + 15, y - 10)
+            ctx.lineTo(x + w / 2, y + 15)
 
-        const player = {
-            head: {
-                //x y
-            }
-        }
-        const head = new Rect(0.5);
-        head.w = 90;
-        head.h = head.w - 10;
-        head.color = "white";
-        head.mouthHeight = 5;
+            ctx.fill()
 
-        const body = new Rect(0.5);
-        body.w = 100;
-        body.h = body.w * 3 / 4;
-        body.color = "white";
-        body.y = 200;
+            //eye
+            ctx.fillStyle = "black"
+            ctx.fillRect(x, y, 20, 20);
+
+            ctx.fillRect(x + w / 4, y - 30 - mouthHeight / 2, w / 4, mouthHeight)
+        };
+        
+
+        const body = new Rect({
+            numberInChain: 0.5,
+            w: 100,
+            h: 75,
+            color: "white",
+            y: 200
+
+        });
 
         const legL = {
             w: body.w,
@@ -182,13 +213,12 @@
         let necktangles = [];
         necktangles.length = NECK.rectCount;
         necktangles.fill(1)
-        necktangles = necktangles.map((e, i) => new Rect(i))
+        necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}))
         const playerX = 150;
         necktangles[4].degRot = 30;
 
 
         //TODO abstract value giver FN
-        let winkel = 10;
         const mouthAnim = function (time) {
             return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
         }
@@ -215,6 +245,8 @@
 //                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
             }
 
+            head.drawMe()
+
 
             lastNeckBone = necktangles[necktangles.length - 1]
             head.y = lastNeckBone.y + lastNeckBone.h / 2 + head.h / 2;  //the last neck
@@ -223,7 +255,6 @@
             firstBone = necktangles[0];
             body.y = firstBone.y - firstBone.h / 2.4;
             drawTrapezoid(body, ctxPlayer)
-            drawHead(head)
 //            drawRect(head, ctxPlayer)
 
             legL.y = body.y;
@@ -341,29 +372,6 @@
 
         }
 
-        const drawHead = function (head, ctx = ctxPlayer, x = playerX) {
-            x -= 5
-            const {w, y, h, mouthHeight} = head;
-            ctx.beginPath();
-            ctx.moveTo(x - w / 2, y - h / 2)
-            ctx.lineTo(x - w / 3, y)
-            ctx.lineTo(x - w / 2, y + h / 2)
-            ctx.lineTo(x + w / 2, y + h / 1.5)
-            ctx.lineTo(x + w / 2, y - h / 1.5)
-            ctx.fillStyle = "white"
-            //nose
-            ctx.moveTo(x + w / 2, y - 12)
-            ctx.lineTo(x + w / 2 + 15, y - 10)
-            ctx.lineTo(x + w / 2, y + 15)
-
-            ctx.fill()
-
-            //eye
-            ctx.fillStyle = "black"
-            ctx.fillRect(x, y, 20, 20);
-
-            ctx.fillRect(x + w / 4, y - 30 - mouthHeight / 2, w / 4, mouthHeight)
-        }
         const drawTrapezoid = function (data, ctx, x = playerX) {
             ctx.beginPath();
             const {y, w, h} = data;
