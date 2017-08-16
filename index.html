@@ -43,23 +43,59 @@
     <script type="text/javascript">
 
         /* EVENT LISTENERS */
+
+
+
+
+        const STATE = {
+            //fireTimer
+            //hasWeaponX
+            moving: false,
+            moveSpeed: 5,
+            playerX: 120,
+
+            //health
+            //points
+            //
+        }
+
         window.addEventListener("keydown", function (ev) {
-            console.log(ev.keyCode)
             NECK.endY = handleInput(ev.keyCode) * 100;
+
+            let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
+            if (xDelta !== 0) {
+                STATE.moving = true;
+                STATE.playerX += xDelta;
+            }
+
+
+
         })
         window.addEventListener("keypress", function (ev) {
-            console.log(ev.keyCode)
+
+
             if (ev.keyCode === 32) {
-                head.fireOn = true;
+                head.fireTimer++;
+                head.fillColor(head.fireTimer)
+
+
+                if (head.fireTimer > 30) {
+                    head.fireOn=true;
+                }
+
             }
         })
 
         window.addEventListener("keyup", function (ev) {
             console.log(ev.keyCode)
+            STATE.moving = !STATE.moving;
+
             if (ev.keyCode === 32) {
                 head.fireOn = false;
                 head.fireTimer = 0;
+                head.color = "white"
             }
+
         })
 
         const canvasPlayer = document.getElementById("canvPlayer")
@@ -189,7 +225,7 @@
             ctx.lineTo(x - w / 2, y + h / 2)
             ctx.lineTo(x + w / 2, y + h / 1.5)
             ctx.lineTo(x + w / 2, y - h / 1.5)
-            ctx.fillStyle = "white"
+            ctx.fillStyle = this.color;
             //nose
             ctx.moveTo(x + w / 2, y - 12)
             ctx.lineTo(x + w / 2 + 15, y - 10)
@@ -207,13 +243,23 @@
         head.stack = 5;
         head.fireOn = false;
 
+        head.mouthAnim = function(time) {
+            return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
+        }
+        head.fillColor = function (percent) {
+            head.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange),'100%', `${100 - percent}%`);
+        }
+
+
         head.fire = function (ctx = ctxPlayer) {
             //draw 10 triangles
             //have a ticker....reset after 200 ticks
             //next triangel ? ticks % 30
             //recursive shit?
+
+
             const that = this;
-            this.fireTimer++;
+            this.fireTimer+= 1 + that.fireTimer/10;
             const mouth = {
                 x: this.x + this.w / 3,
                 y: this.y - this.h / 2.3,
@@ -223,40 +269,34 @@
 
                 h: 40,
                 w: 80,
-                color: "blue"
+                color: 'blue'
             }
 
             const colY = yToPitch(that.y, GAME.endY, NECK.startY, GAME.pitchRange);
 
 
-            function spit(mouthX, mouthY, h, stack = that.stack) {
+            function spit(mouthX, mouthY, h) {
                 ctx.beginPath();
                 const w = data.w;
                 ctx.moveTo(mouthX, mouthY);
                 ctx.lineTo(mouthX + w / 2, mouthY - h / 7);
                 ctx.lineTo(mouthX + w / 2, mouthY + h / 7);
-                ctx.fillStyle = NumberToHSLa(colY + Math.random()*2,`${5/stack * 20 * Math.random()}%`) ;
+                ctx.fillStyle = NumberToHSLa(colY-0.5 + Math.random());
                 ctx.closePath()
                 ctx.fill();
-
-                let rounds = Math.floor(that.fireTimer / 20)
-
-                for (let i = 0; i < rounds; i++) {
-                    stack--;
-                    if (stack > 0) { //iteration is better
-                        spit(mouthX + 20 * i, mouthY, h + i *40, stack)
-                    }
-                    else {
-                        if (that.fireTimer > 200) {
-                            that.fireTimer = 0;
-                            that.fireOn = false;
-                        }
-                        that.stack = 5;
-                    }
-                }
             }
 
-            spit(mouth.x, mouth.y, data.h)
+            let rounds = Math.floor(that.fireTimer / 10)
+
+            for (let i = 0; i < rounds; i++) {
+                spit(mouth.x + 20 * i, mouth.y, data.h + i * 40)
+            }
+
+            if (that.fireTimer > 100) {
+                that.fireTimer = 0;
+                that.fireOn = false;
+            }
+            head.mouthHeight = this.mouthAnim(this.fireTimer) + 2;
 
         }
 
@@ -273,10 +313,31 @@
         const legL = {
             w: body.w,
             y: 120,
-            h: 120
+            h: 120,
+            maxh: 120,
+            up: true,
+            move(){
+                if (this.h < 120) {
+                    this.up = false
+                }
+                else if (this.h > 180){
+                    this.up = true;
+                }
+                if (this.up) {
+                    this.h -= 4* (this.maxh/(this.h));
+                }
+                else if (!this.up) {
+                    this.h+=2 + Math.random()*2;
+                }
+
+            }
         }
         const legR = Object.assign({}, legL);
         legR.w = legR.w * -1 //direction shift
+        legR.moveWith = function (otherLeg) {
+            this.up = !otherLeg.up;
+            this.move();
+        }
 
 
         flies = []
@@ -284,12 +345,9 @@
         necktangles.length = NECK.rectCount;
         necktangles.fill(1)
         necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}))
-        const playerX = 150;
+        let playerX = 150;
 
         //TODO abstract value giver FN
-        const mouthAnim = function (time) {
-            return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
-        }
 
         /*ACTION*/
         let timer = 0;
@@ -305,7 +363,7 @@
                 ctxPlayer.save()
 //                ctxPlayer.translate(playerX, rect.y)
                 rect.localRotation = Math.random() * 30;
-
+                rect.x = STATE.playerX
 
                 rect.drawMe();
 //                drawRect(rect, ctxPlayer)
@@ -319,10 +377,11 @@
                 head.fire();
             }
 
+            head.x = STATE.playerX;
+            body.x = STATE.playerX;
 
             lastNeckBone = necktangles[necktangles.length - 1]
             head.y = lastNeckBone.y + lastNeckBone.h / 2 + head.h / 2;  //the last neck
-            head.mouthHeight = mouthAnim(timer)
 
             firstBone = necktangles[0];
             body.y = firstBone.y - firstBone.h / 2.4;
@@ -330,9 +389,18 @@
 //            drawRect(head, ctxPlayer)
 
             legL.y = body.y;
-            legL.h = legL.y;
             legR.y = body.y;
-            legR.h = legL.y;
+
+            if (STATE.moving) {
+                legR.moveWith(legL)
+
+                legL.move();
+            }
+            else {
+                legL.h = legL.y;
+                legR.h = legL.y;
+
+            }
 
             drawTriangle(legL, ctxPlayer)
             drawTriangle(legR, ctxPlayer)
@@ -383,6 +451,18 @@
             return pitch * ((window.innerHeight - NECK.startY) / GAME.pitchRange) //-- one NeckUnit
         }
 
+
+        const handleMove = function(inputCode) {
+            if (inputCode === 68 || inputCode === 39) {
+                return 1;
+            }
+            else if (inputCode === 65 || inputCode === 37) {
+                return -1;
+            }
+            else {
+                return 0;
+            }
+        }
         /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
             switch (inputCode) {
@@ -413,12 +493,12 @@
                     return 9;
 
                 default:
-                    return 5;
+                    return NECK.endY/100;
             }
 
         }
 
-        const drawTriangle = function (data, ctx, x = playerX) {
+        const drawTriangle = function (data, ctx, x = STATE.playerX) {
             ctx.beginPath();
             const {w, y, h} = data;
             ctx.moveTo(x - w / 2.4, y);
@@ -428,7 +508,7 @@
             ctx.fill();
         }
 
-        const drawTrapezoid = function (data, ctx, x = playerX) {
+        const drawTrapezoid = function (data, ctx, x = STATE.playerX) {
             ctx.beginPath();
             const {y, w, h} = data;
             ctx.moveTo(x - w / 2, y);
