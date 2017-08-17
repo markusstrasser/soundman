@@ -45,14 +45,16 @@
         /* EVENT LISTENERS */
 
 
-
-
         const STATE = {
             //fireTimer
             //hasWeaponX
             moving: false,
             moveSpeed: 5,
             playerX: 120,
+            pitchRange: 10,
+            FPS: 60,
+            endY: 800,
+            headY: 600
 
             //health
             //points
@@ -69,7 +71,6 @@
             }
 
 
-
         })
         window.addEventListener("keypress", function (ev) {
 
@@ -80,7 +81,7 @@
 
 
                 if (head.fireTimer > 30) {
-                    head.fireOn=true;
+                    head.fireOn = true;
                 }
 
             }
@@ -88,7 +89,7 @@
 
         window.addEventListener("keyup", function (ev) {
             console.log(ev.keyCode)
-            STATE.moving = !STATE.moving;
+            STATE.moving = false;
 
             if (ev.keyCode === 32) {
                 head.fireOn = false;
@@ -109,9 +110,7 @@
         const ctxes = [ctxPlayer, ctxBG]
         /* DECLARATIONS*/
         const GAME = {
-            pitchRange: 10,
-            FPS: 60,
-            endY: 800
+
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         }
 
@@ -150,10 +149,6 @@
                 const delta = this.goalY - this.y; //linear: exchange currentY here with memory of y when it started
                 this.y += delta / inSteps;
                 return this.y;
-            }
-
-            moveTo() {
-
             }
 
             incrementPos() {
@@ -196,7 +191,7 @@
             drawMe(ctx = ctxPlayer, padding = 1.1) {
                 this.drawFns = this.executeBP(this.blueprint())
                 ctx.beginPath();
-                ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange));
+                ctx.fillStyle = NumberToHSLa(yToPitch(this.y, STATE.endY, NECK.startY, STATE.pitchRange));
                 ctx.save();
 
                 this.localRotate();
@@ -243,53 +238,44 @@
         head.stack = 5;
         head.fireOn = false;
 
-        head.mouthAnim = function(time) {
+        head.mouthAnim = function (time) {
             return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
         }
         head.fillColor = function (percent) {
-            head.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange),'100%', `${100 - percent}%`);
+            head.color = NumberToHSLa(yToPitch(this.y, STATE.endY, NECK.startY, STATE.pitchRange), '100%', `${80 - percent}%`);
         }
 
 
-        head.fire = function (ctx = ctxPlayer) {
-            //draw 10 triangles
-            //have a ticker....reset after 200 ticks
-            //next triangel ? ticks % 30
-            //recursive shit?
+        head.spit = function (mouth, data, ctx = ctxPlayer) {
+            const {x,y} = Object.assign({}, mouth);
+            const {w,h, colY} = Object.assign({},data);
 
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + w / 2, y - h / 7);
+            ctx.lineTo(x + w / 2, y + h / 7);
+            ctx.fillStyle = NumberToHSLa(colY - 0.5 + Math.random());
+            ctx.closePath()
+            ctx.fill();
+        }
 
+        head.fire = function () {
             const that = this;
-            this.fireTimer+= 1 + that.fireTimer/10;
+            this.fireTimer += 1 + that.fireTimer / 10;
             const mouth = {
                 x: this.x + this.w / 3,
                 y: this.y - this.h / 2.3,
             }
             const data = {
                 x: this.x + this.w / 2,
-
                 h: 40,
                 w: 80,
-                color: 'blue'
+                colY: yToPitch(that.y, STATE.endY, NECK.startY, STATE.pitchRange)
             }
-
-            const colY = yToPitch(that.y, GAME.endY, NECK.startY, GAME.pitchRange);
-
-
-            function spit(mouthX, mouthY, h) {
-                ctx.beginPath();
-                const w = data.w;
-                ctx.moveTo(mouthX, mouthY);
-                ctx.lineTo(mouthX + w / 2, mouthY - h / 7);
-                ctx.lineTo(mouthX + w / 2, mouthY + h / 7);
-                ctx.fillStyle = NumberToHSLa(colY-0.5 + Math.random());
-                ctx.closePath()
-                ctx.fill();
-            }
-
             let rounds = Math.floor(that.fireTimer / 10)
 
             for (let i = 0; i < rounds; i++) {
-                spit(mouth.x + 20 * i, mouth.y, data.h + i * 40)
+                this.spit(mouth, data)
             }
 
             if (that.fireTimer > 100) {
@@ -316,18 +302,18 @@
             h: 120,
             maxh: 120,
             up: true,
-            move(){
+            move() {
                 if (this.h < 120) {
                     this.up = false
                 }
-                else if (this.h > 180){
+                else if (this.h > 180) {
                     this.up = true;
                 }
                 if (this.up) {
-                    this.h -= 4* (this.maxh/(this.h));
+                    this.h -= 4 * (this.maxh / (this.h));
                 }
                 else if (!this.up) {
-                    this.h+=2 + Math.random()*2;
+                    this.h += 2 + Math.random() * 2;
                 }
 
             }
@@ -434,7 +420,7 @@
                 rect.degRot = rnd;
                 rect.y = NECK.startY + rect.numberInChain * rect.h;
                 rect.goalY = rect.y;
-                rect.color = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));
+                rect.color = NumberToHSLa(yToPitch(rect.y, STATE.endY, NECK.startY, STATE.pitchRange));
                 rect.w = rect.w - (5 * rect.numberInChain); //calcRectWidth
                 rect.drawMe();
             }
@@ -448,11 +434,11 @@
 
         //NECK.endY =
         function pitchToY(pitch) {
-            return pitch * ((window.innerHeight - NECK.startY) / GAME.pitchRange) //-- one NeckUnit
+            return pitch * ((window.innerHeight - NECK.startY) / STATE.pitchRange) //-- one NeckUnit
         }
 
 
-        const handleMove = function(inputCode) {
+        const handleMove = function (inputCode) {
             if (inputCode === 68 || inputCode === 39) {
                 return 1;
             }
@@ -493,7 +479,7 @@
                     return 9;
 
                 default:
-                    return NECK.endY/100;
+                    return NECK.endY / 100;
             }
 
         }
