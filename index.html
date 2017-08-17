@@ -51,6 +51,8 @@
             moving: false,
             moveSpeed: 5,
             playerX: 120,
+            fireOn: false,
+            loadingFire: false
 
             //health
             //points
@@ -58,6 +60,10 @@
         }
 
         window.addEventListener("keydown", function (ev) {
+            if (ev.keyCode === 32) {
+                STATE.loadingFire = true;
+            }
+
             NECK.endY = handleInput(ev.keyCode) * 100;
 
             let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
@@ -70,25 +76,16 @@
         })
         window.addEventListener("keypress", function (ev) {
 
-
-            if (ev.keyCode === 32) {
-                head.fireTimer++;
-                head.fillColor(head.fireTimer)
-
-
-                if (head.fireTimer > 30) {
-                    head.fireOn = true;
-                }
-
-            }
         })
 
         window.addEventListener("keyup", function (ev) {
+
             console.log(ev.keyCode)
             STATE.moving = false;
 
             if (ev.keyCode === 32) {
-                head.fireOn = false;
+                STATE.loadingFire = false;
+                STATE.fireOn = false;
                 head.fireTimer = 0;
                 head.color = "white"
             }
@@ -154,20 +151,14 @@
                 this.adjustY(10);
                 this.h = ((endY - startY) / rectCount)
             }
-
             moveTo() {
             }
-
-            incrementPos() {
-            }
-
             localRotate(ctx = this.ctx) {
                 ctx.translate(this.x, this.y)
                 ctx.rotate(-this.localRotation * Math.PI / 180)
                 ctx.translate(-(this.x), -(this.y))
 //                drawRect(box, ctxPlayer, playerX + 200);
             }
-
             blueprint() {
                 const {x, y, w, h} = this;
                 const blueprint = [{
@@ -181,10 +172,6 @@
                 }]
                 return blueprint;
             }
-
-            modifyDNA() {
-            }
-
             executeBP(blueprint, ctx = this.ctx) {
                 const bp = blueprint.slice();
 
@@ -219,6 +206,18 @@
                 Object.assign(this, presets);
 
             }
+            tick(STATE) {
+                const {playerX, fireOn} = STATE;
+
+                this.x = playerX;
+                this.fillColor(this.fireTimer)
+
+                this.mouthHeight = this.mouthAnim(this.fireTimer) + 2;
+                this.drawMe();
+
+                if (fireOn) {this.fire()}
+
+            }
 
             drawMe(ctx = this.ctx) { //override
                 const {x, y, w, h, mouthHeight} = this;
@@ -244,14 +243,19 @@
             }
 
             mouthAnim(time) {
-                return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.5))
+                return 15 * (Math.abs(Math.sin(Math.pow(time % 200 / 25, 1.5)) * 1.7))
             }
 
             fillColor(percent) {
-                this.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange), '100%', `${100 - percent}%`);
+                if (this.fireTimer !== 0) {
+                    this.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange), '100%', `${100 - percent}%`);
+                }
+                else {
+                    this.color = "white"
+                }
             }
 
-            spit(mouth, data, ctx = this.ctx) {
+            spit(mouth, data, ctx = this.ctx) { //should draw after drawME!! <<<< to see otherwise mouth clips the flames off
                 const colY = yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange);
                 ctx.beginPath();
                 const {w, h} = data;
@@ -264,7 +268,7 @@
                 ctx.fill();
             }
 
-            fire(ctx = this.ctx) {
+            fire() {
                 const that = this;
                 this.fireTimer += 1 + that.fireTimer / 10;
                 const mouth = {
@@ -282,14 +286,11 @@
                     d.h += 40 * i;
                     this.spit(m, d)
                 }
-
                 if (that.fireTimer > 100) {
                     that.fireTimer = 0;
                     that.fireOn = false;
                 }
-                this.mouthHeight = this.mouthAnim(this.fireTimer) + 2;
             }
-
         }
 
         const head = new Head({
@@ -350,15 +351,15 @@
 
         const stateToRect = function (rect, State, Neck) {
             //TODO return rect instead of mutating
+            const r = (Object.assign(Object.create(rect))) //copy the class with functions & prototypes
             const {playerX} = State;
-            const {neck} = Neck;
-            rect.adjust(neck);
-            rect.x = playerX
+            r.adjust(Neck);
+            r.x = playerX
 
-            if (rect.goalY / rect.y < 0.97 || rect.goalY / rect.y > 1.03) { //if the neck is moving
-                rect.localRotation = -10 + Math.random() * 30;
+            if (r.goalY / r.y < 0.97 || r.goalY / r.y > 1.03) { //if the neck is moving
+                r.localRotation = -10 + Math.random() * 30;
             }
-            rect.drawMe();
+            return r;
         }
         const loop = function () {
             requestAnimationFrame(loop);
@@ -367,24 +368,25 @@
 
             timer++;
 
-            necktangles.map(stateToRect)
-//            for (let rect of necktangles) {
-//                rect.adjust(NECK);
-//                rect.x = STATE.playerX
-//
-//                if (rect.goalY / rect.y < 0.97 || rect.goalY / rect.y > 1.03) { //if the neck is moving
-//                    rect.localRotation = -10 + Math.random() * 30;
-//                }
-//                rect.drawMe();
-//            }
-
-            head.drawMe();
-
-            if (head.fireOn) {
-                head.fire();
+            if (head.fireTimer > 30) {
+                STATE.fireOn = true;
+            }
+            if (STATE.loadingFire) {
+                head.fireTimer++;
             }
 
-            head.x = STATE.playerX;
+            necktangles = necktangles.map(rect => stateToRect(rect, STATE, NECK))
+            necktangles.map(r => r.drawMe())
+
+
+            //body tick, head.tick(STATE)
+            head.tick(STATE);
+
+//            if (STATE.fireOn) {
+//                head.fire();
+//            }
+//
+//            head.x = STATE.playerX;
             body.x = STATE.playerX;
 
             lastNeckBone = necktangles[necktangles.length - 1]
@@ -408,14 +410,11 @@
                 legR.h = legL.y;
 
             }
-
             drawTriangle(legL, ctxPlayer)
             drawTriangle(legR, ctxPlayer)
-
         }
 
         function load() {
-
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
