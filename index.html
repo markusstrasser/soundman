@@ -43,8 +43,6 @@
     <script type="text/javascript">
 
         /* EVENT LISTENERS */
-
-
         const STATE = {
             //fireTimer
             //hasWeaponX
@@ -52,7 +50,14 @@
             moveSpeed: 5,
             playerX: 120,
             fireOn: false,
-            loadingFire: false
+            loadingFire: false,
+
+            NECK: {
+                speed: 6,
+                rectCount: 10,
+                startY: 200,
+                endY: 600
+            }
 
             //health
             //points
@@ -63,44 +68,29 @@
             if (ev.keyCode === 32) {
                 STATE.loadingFire = true;
             }
-
-            NECK.endY = handleInput(ev.keyCode) * 100;
-
+            STATE.NECK.endY = handleInput(ev.keyCode) * 100;
             let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
             if (xDelta !== 0) {
                 STATE.moving = true;
                 STATE.playerX += xDelta;
             }
-
-
-        })
-        window.addEventListener("keypress", function (ev) {
-
         })
 
         window.addEventListener("keyup", function (ev) {
-
-            console.log(ev.keyCode)
-            STATE.moving = false;
-
             if (ev.keyCode === 32) {
                 STATE.loadingFire = false;
                 STATE.fireOn = false;
                 head.fireTimer = 0;
                 head.color = "white"
             }
-
         })
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
-
         ctxPlayer.lineCap = "round"
 
-        const canvi = [canvasPlayer, canvasBG]
-        const ctxes = [ctxPlayer, ctxBG]
         /* DECLARATIONS*/
         const GAME = {
             pitchRange: 10,
@@ -109,12 +99,6 @@
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         }
 
-        const NECK = {
-            speed: 6,
-            rectCount: 10,
-            startY: 200,
-            endY: 600
-        }
         const Rect = class {
             constructor(presets, canvasContext) {
                 //there is no startY ... set that were you use the class
@@ -130,7 +114,19 @@
                 Object.assign(this, presets) //merge into what's left
             }
 
-            tick() {
+            tick(STATE) {
+                const S = Object.assign({}, STATE)
+                const {playerX} = S;
+                const {NECK} = S
+                this.adjust(Object.assign({}, NECK));
+                this.x = playerX;
+
+                if (this.goalY / this.y < 0.97 || this.goalY / this.y > 1.03) { //if the neck is moving
+                    this.localRotation = -10 + Math.random() * 30;
+                }
+                this.drawMe()
+
+                return this;
             }
 
             setGoalY(start, end, count) {
@@ -151,14 +147,17 @@
                 this.adjustY(10);
                 this.h = ((endY - startY) / rectCount)
             }
+
             moveTo() {
             }
+
             localRotate(ctx = this.ctx) {
                 ctx.translate(this.x, this.y)
                 ctx.rotate(-this.localRotation * Math.PI / 180)
                 ctx.translate(-(this.x), -(this.y))
 //                drawRect(box, ctxPlayer, playerX + 200);
             }
+
             blueprint() {
                 const {x, y, w, h} = this;
                 const blueprint = [{
@@ -172,6 +171,7 @@
                 }]
                 return blueprint;
             }
+
             executeBP(blueprint, ctx = this.ctx) {
                 const bp = blueprint.slice();
 
@@ -184,7 +184,7 @@
             drawMe(ctx = this.ctx, padding = 1.1) {
                 this.drawFns = this.executeBP(this.blueprint())
                 ctx.beginPath();
-                ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange));
+                ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange));
                 ctx.save();
 
                 this.localRotate();
@@ -203,19 +203,28 @@
                 this.ctx = canvasContext;
                 this.fireTimer = 0;
                 this.fireOn = false; //TODO --> STORE not state
+
                 Object.assign(this, presets);
 
             }
+
             tick(STATE) {
                 const {playerX, fireOn} = STATE;
+                const {neckT} = STATE.NECK;
 
+                const lastNeckBone = neckT[neckT.length - 1];
+
+                this.y = lastNeckBone.y + lastNeckBone.h / 2 + this.h / 2;
                 this.x = playerX;
+
                 this.fillColor(this.fireTimer)
 
                 this.mouthHeight = this.mouthAnim(this.fireTimer) + 2;
                 this.drawMe();
 
-                if (fireOn) {this.fire()}
+                if (fireOn) {
+                    this.fire()
+                }
 
             }
 
@@ -248,7 +257,7 @@
 
             fillColor(percent) {
                 if (this.fireTimer !== 0) {
-                    this.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange), '100%', `${100 - percent}%`);
+                    this.color = NumberToHSLa(yToPitch(this.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange), '100%', `${100 - percent}%`);
                 }
                 else {
                     this.color = "white"
@@ -256,7 +265,7 @@
             }
 
             spit(mouth, data, ctx = this.ctx) { //should draw after drawME!! <<<< to see otherwise mouth clips the flames off
-                const colY = yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange);
+                const colY = yToPitch(this.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange);
                 ctx.beginPath();
                 const {w, h} = data;
                 const {x, y} = mouth;
@@ -269,15 +278,14 @@
             }
 
             fire() {
-                const that = this;
-                this.fireTimer += 1 + that.fireTimer / 10;
+                this.fireTimer += 1 + this.fireTimer / 10;
                 const mouth = {
                     x: this.x + this.w / 3,
                     y: this.y - this.h / 2.3,
                 }
                 const flameData = {h: 40, w: 80}
 
-                let rounds = Math.floor(that.fireTimer / 10)
+                let rounds = Math.floor(this.fireTimer / 10)
 
                 for (let i = 0; i < rounds; i++) {
                     const m = Object.assign({}, mouth)
@@ -286,9 +294,9 @@
                     d.h += 40 * i;
                     this.spit(m, d)
                 }
-                if (that.fireTimer > 100) {
-                    that.fireTimer = 0;
-                    that.fireOn = false;
+                if (this.fireTimer > 100) {
+                    this.fireTimer = 0;
+                    this.fireOn = false;
                 }
             }
         }
@@ -308,15 +316,65 @@
             w: 100,
             h: 75,
             color: "white",
-            y: 200
+            y: 200,
+            tick(STATE) {
+                const {playerX} = Object.assign({}, STATE);
+                const {neckT} = Object.assign({}, STATE.NECK);
+                this.x = playerX;
+                this.y = neckT[0].y - neckT[0].h / 2.4; //firstNeckBone
+
+                this.drawMe();
+            },
+            drawMe(ctx = this.ctx) {
+                ctx.beginPath();
+                const {x, y, w, h} = this;
+                ctx.moveTo(x - w / 2, y);
+                ctx.lineTo(x + w / 2, y);
+                ctx.lineTo(x + w / 5, y - h);
+                ctx.lineTo(x - w / 5, y - h);
+                ctx.fillStyle = "white";
+                ctx.fill();
+            }
         }, ctxPlayer);
 
+
         const legL = {
+            ctx: ctxPlayer,
             w: body.w,
             y: 120,
             h: 120,
             maxh: 120,
             up: true,
+            tick(STATE, otherLeg) {
+                const {legsY, playerX} = Object.assign({}, STATE);
+                this.y = legsY;
+                this.x = playerX;
+
+                if (STATE.moving && otherLeg !== undefined) {
+                    this.moveWith(otherLeg)
+                }
+                else if (STATE.moving && otherLeg === undefined) {
+                    this.move();
+                }
+                else {
+                    this.h = this.y;
+                }
+
+                this.drawMe()
+            },
+            drawMe(ctx = this.ctx) {
+                ctx.beginPath();
+                const {x, w, y, h} = this;
+                ctx.moveTo(x - w / 2.4, y);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x - w / 3, y - h);
+                ctx.fillStyle = "white";
+                ctx.fill();
+            },
+            moveWith(otherLeg) {
+                this.up = !otherLeg.up;
+                this.move();
+            },
             move() {
                 if (this.h < 120) {
                     this.up = false
@@ -332,89 +390,46 @@
                 }
             }
         }
+
         const legR = Object.assign({}, legL);
         legR.w = legR.w * -1 //direction shift
-        legR.moveWith = function (otherLeg) {
-            this.up = !otherLeg.up;
-            this.move();
-        }
-
 
         flies = []
         let necktangles = [];
-        necktangles.length = NECK.rectCount;
+        necktangles.length = STATE.NECK.rectCount;
         necktangles.fill(1)
         necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}, ctxPlayer))
-
         /*ACTION*/
         let timer = 0;
 
-        const stateToRect = function (rect, State, Neck) {
-            //TODO return rect instead of mutating
-            const r = (Object.assign(Object.create(rect))) //copy the class with functions & prototypes
-            const {playerX} = State;
-            r.adjust(Neck);
-            r.x = playerX
 
-            if (r.goalY / r.y < 0.97 || r.goalY / r.y > 1.03) { //if the neck is moving
-                r.localRotation = -10 + Math.random() * 30;
-            }
-            return r;
-        }
         const loop = function () {
             requestAnimationFrame(loop);
 
             ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
+            
+            //all States => const headState = ....destructure
 
-            timer++;
-
-            if (head.fireTimer > 30) {
-                STATE.fireOn = true;
-            }
             if (STATE.loadingFire) {
                 head.fireTimer++;
             }
+            if (head.fireTimer > 30) {
+                STATE.fireOn = true;
+            }
 
-            necktangles = necktangles.map(rect => stateToRect(rect, STATE, NECK))
-            necktangles.map(r => r.drawMe())
+            necktangles.forEach(rect => rect.tick(STATE))
 
+            STATE.NECK.neckT = necktangles;
 
-            //body tick, head.tick(STATE)
             head.tick(STATE);
+            body.tick(STATE);
 
-//            if (STATE.fireOn) {
-//                head.fire();
-//            }
-//
-//            head.x = STATE.playerX;
-            body.x = STATE.playerX;
-
-            lastNeckBone = necktangles[necktangles.length - 1]
-            head.y = lastNeckBone.y + lastNeckBone.h / 2 + head.h / 2;  //the last neck
-
-            firstBone = necktangles[0];
-            body.y = firstBone.y - firstBone.h / 2.4;
-            drawTrapezoid(body, ctxPlayer)
-//            drawRect(head, ctxPlayer)
-
-            legL.y = body.y;
-            legR.y = body.y;
-
-            if (STATE.moving) {
-                legR.moveWith(legL)
-
-                legL.move();
-            }
-            else {
-                legL.h = legL.y;
-                legR.h = legL.y;
-
-            }
-            drawTriangle(legL, ctxPlayer)
-            drawTriangle(legR, ctxPlayer)
+            const legsY = body.y;
+            legL.tick(Object.assign({legsY: legsY}, STATE), undefined);
+            legR.tick(Object.assign({legsY: legsY}, STATE), legL);
         }
 
-        function load() {
+        const load = function () {
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
@@ -436,17 +451,15 @@
 
             for (let i = 0; i < necktangles.length; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
                 let rect = necktangles[i]
-                const rnd = Math.random() * 3;
-                rect.degRot = rnd;
-                rect.y = NECK.startY + rect.numberInChain * rect.h;
+                rect.y = STATE.NECK.startY + rect.numberInChain * rect.h;
                 rect.goalY = rect.y;
-                rect.color = NumberToHSLa(yToPitch(rect.y, GAME.endY, NECK.startY, GAME.pitchRange));
+                rect.color = NumberToHSLa(yToPitch(rect.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange));
                 rect.w = rect.w - (5 * rect.numberInChain); //calcRectWidth
                 rect.drawMe();
             }
-            loop()
+            console.log(necktangles)
+//            loop()
         }
-
 
         /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
@@ -478,7 +491,7 @@
                     return 9;
 
                 default:
-                    return NECK.endY / 100;
+                    return STATE.NECK.endY / 100;
             }
 
         }
@@ -489,7 +502,7 @@
         }
 
         function pitchToY(pitch) {
-            return pitch * ((window.innerHeight - NECK.startY) / GAME.pitchRange) //-- one NeckUnit
+            return pitch * ((window.innerHeight - STATE.NECK.startY) / GAME.pitchRange) //-- one NeckUnit
         }
 
         const drawTriangle = function (data, ctx, x = STATE.playerX) {
@@ -547,6 +560,19 @@
             }
 
             return "hsla" + "(" + h + "," + s + "," + l + "," + a + ")";
+        }
+
+        const stateToRect = function (rect, State, Neck) {
+            //TODO return rect instead of mutating
+            const r = (Object.assign(Object.create(rect))) //copy the class with functions & prototypes
+            const {playerX} = State;
+            r.adjust(Neck);
+            r.x = playerX
+
+            if (r.goalY / r.y < 0.97 || r.goalY / r.y > 1.03) { //if the neck is moving
+                r.localRotation = -10 + Math.random() * 30;
+            }
+            return r;
         }
 
     </script>
