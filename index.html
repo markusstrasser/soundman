@@ -85,7 +85,7 @@
 
         window.addEventListener("keyup", function (ev) {
             console.log(ev.keyCode)
-            STATE.moving = !STATE.moving;
+            STATE.moving = false;
 
             if (ev.keyCode === 32) {
                 head.fireOn = false;
@@ -119,25 +119,24 @@
             endY: 600
         }
         const Rect = class {
-            constructor(presets) {
+            constructor(presets, canvasContext) {
                 //there is no startY ... set that were you use the class
 //                this.numberInChain = numberInChain //1 = 1st from the bottom going up
+                this.ctx = canvasContext;
                 this.y = 200;
                 this.goalY = 200;
                 this.w = 100;
                 this.h = 20;
                 this.x = 150;
                 this.color = "red";
-                this.localRotation = 10; //gets inverted @ rotateFN ==> prefer clockwise
+                this.localRotation = -5 + Math.random() * 10; //gets inverted @ rotateFN ==> prefer clockwise
                 Object.assign(this, presets) //merge into what's left
             }
 
             tick() {
-
             }
 
-            setGoalY(data) {
-                const {start, end, count} = data;
+            setGoalY(start, end, count) {
                 const percY = this.numberInChain / count;
                 this.goalY = start + (end - start) * percY;
                 return this.goalY;
@@ -149,15 +148,20 @@
                 return this.y;
             }
 
-            moveTo() {
+            adjust(neck) {
+                const {startY, endY, rectCount} = neck;
+                this.setGoalY(startY, endY, rectCount)
+                this.adjustY(10);
+                this.h = ((endY - startY) / rectCount)
+            }
 
+            moveTo() {
             }
 
             incrementPos() {
-
             }
 
-            localRotate(ctx = ctxPlayer) {
+            localRotate(ctx = this.ctx) {
                 ctx.translate(this.x, this.y)
                 ctx.rotate(-this.localRotation * Math.PI / 180)
                 ctx.translate(-(this.x), -(this.y))
@@ -181,7 +185,7 @@
             modifyDNA() {
             }
 
-            executeBP(blueprint, ctx = ctxPlayer) {
+            executeBP(blueprint, ctx = this.ctx) {
                 const bp = blueprint.slice();
 
                 const commands = bp.map(instruct => function () {
@@ -190,7 +194,7 @@
                 return commands;
             }
 
-            drawMe(ctx = ctxPlayer, padding = 1.1) {
+            drawMe(ctx = this.ctx, padding = 1.1) {
                 this.drawFns = this.executeBP(this.blueprint())
                 ctx.beginPath();
                 ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange));
@@ -247,7 +251,7 @@
                 this.color = NumberToHSLa(yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange), '100%', `${100 - percent}%`);
             }
 
-            spit(mouth, data, ctx=this.ctx) {
+            spit(mouth, data, ctx = this.ctx) {
                 const colY = yToPitch(this.y, GAME.endY, NECK.startY, GAME.pitchRange);
                 ctx.beginPath();
                 const {w, h} = data;
@@ -267,19 +271,13 @@
                     x: this.x + this.w / 3,
                     y: this.y - this.h / 2.3,
                 }
-                const data = {
-                    x: this.x + this.w / 2,
-
-                    h: 40,
-                    w: 80,
-                    color: 'blue'
-                }
+                const flameData = {h: 40, w: 80}
 
                 let rounds = Math.floor(that.fireTimer / 10)
 
                 for (let i = 0; i < rounds; i++) {
                     const m = Object.assign({}, mouth)
-                    const d = Object.assign({}, data)
+                    const d = Object.assign({}, flameData)
                     m.x += 20 * i;
                     d.h += 40 * i;
                     this.spit(m, d)
@@ -310,7 +308,7 @@
             h: 75,
             color: "white",
             y: 200
-        });
+        }, ctxPlayer);
 
         const legL = {
             w: body.w,
@@ -331,7 +329,6 @@
                 else if (!this.up) {
                     this.h += 2 + Math.random() * 2;
                 }
-
             }
         }
         const legR = Object.assign({}, legL);
@@ -346,32 +343,40 @@
         let necktangles = [];
         necktangles.length = NECK.rectCount;
         necktangles.fill(1)
-        necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}))
-        let playerX = 150;
-
-        //TODO abstract value giver FN
+        necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}, ctxPlayer))
 
         /*ACTION*/
         let timer = 0;
+
+        const stateToRect = function (rect, State, Neck) {
+            //TODO return rect instead of mutating
+            const {playerX} = State;
+            const {neck} = Neck;
+            rect.adjust(neck);
+            rect.x = playerX
+
+            if (rect.goalY / rect.y < 0.97 || rect.goalY / rect.y > 1.03) { //if the neck is moving
+                rect.localRotation = -10 + Math.random() * 30;
+            }
+            rect.drawMe();
+        }
         const loop = function () {
-            timer++;
             requestAnimationFrame(loop);
 
-            ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight)
-            for (let rect of necktangles) {
-                rect.setGoalY({start: NECK.startY, end: NECK.endY, count: NECK.rectCount})
-                rect.adjustY(10);
-                rect.h = ((NECK.endY - NECK.startY) / NECK.rectCount)
-                ctxPlayer.save()
-//                ctxPlayer.translate(playerX, rect.y)
-                rect.localRotation = Math.random() * 30;
-                rect.x = STATE.playerX
+            ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
-                rect.drawMe();
-//                drawRect(rect, ctxPlayer)
-                ctxPlayer.restore();
-//                ctxPlayer.rotate(-rect.degRot * Math.PI / 180)
-            }
+            timer++;
+
+            necktangles.map(stateToRect)
+//            for (let rect of necktangles) {
+//                rect.adjust(NECK);
+//                rect.x = STATE.playerX
+//
+//                if (rect.goalY / rect.y < 0.97 || rect.goalY / rect.y > 1.03) { //if the neck is moving
+//                    rect.localRotation = -10 + Math.random() * 30;
+//                }
+//                rect.drawMe();
+//            }
 
             head.drawMe();
 
