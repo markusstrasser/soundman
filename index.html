@@ -54,27 +54,29 @@
 
             NECK: {
                 speed: 6,
-                rectCount: 10,
+                rectCount: 12,
                 startY: 200,
                 endY: 600
-            }
-
+            },
             //health
             //points
-            //
+            //so 1 unit always equals same pixels
+            scaler: window.innerWidth / 100,
         }
 
         window.addEventListener("keydown", function (ev) {
             if (ev.keyCode === 32) {
                 STATE.loadingFire = true;
+            } else {
+                STATE.NECK.endY = STATE.NECK.startY + handleInput(ev.keyCode) * (GAME.endY - STATE.NECK.startY) / 10;
             }
-            STATE.NECK.endY = handleInput(ev.keyCode) * 100;
             let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
             if (xDelta !== 0) {
                 STATE.moving = true;
-                STATE.playerX += xDelta;
+                STATE.playerX += 2 * xDelta;
             }
-        })
+
+        });
 
         window.addEventListener("keyup", function (ev) {
             if (ev.keyCode === 32) {
@@ -83,21 +85,25 @@
                 head.fireTimer = 0;
                 head.color = "white"
             }
+            if (handleMove(ev.keyCode) !== 0) {
+                STATE.moving = false;
+            }
         })
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
-        ctxPlayer.lineCap = "round"
+        ctxPlayer.lineCap = "round";
+        ctxBG.lineCap = "round";
 
         /* DECLARATIONS*/
         const GAME = {
-            pitchRange: 10,
+            pitchRange: 12,
             FPS: 60,
-            endY: 800
+            endY: window.innerHeight
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
-        }
+        };
 
         const Rect = class {
             constructor(presets, canvasContext) {
@@ -111,13 +117,13 @@
                 this.x = 150;
                 this.color = "red";
                 this.localRotation = -5 + Math.random() * 10; //gets inverted @ rotateFN ==> prefer clockwise
+
                 Object.assign(this, presets) //merge into what's left
             }
 
             tick(STATE) {
                 const S = Object.assign({}, STATE)
-                const {playerX} = S;
-                const {NECK} = S
+                const {playerX, NECK, gameUnitsToPixel} = S;
                 this.adjust(Object.assign({}, NECK));
                 this.x = playerX;
 
@@ -148,7 +154,17 @@
                 this.h = ((endY - startY) / rectCount)
             }
 
-            moveTo() {
+            blueprint() {
+                const {x, y, w, h} = this;
+                return [{
+                    method: "rect",
+                    vertices: [
+                        x - w / 2,
+                        y - h / 2,
+                        w,
+                        h
+                    ]
+                }]
             }
 
             localRotate(ctx = this.ctx) {
@@ -158,38 +174,14 @@
 //                drawRect(box, ctxPlayer, playerX + 200);
             }
 
-            blueprint() {
-                const {x, y, w, h} = this;
-                const blueprint = [{
-                    method: "rect",
-                    vertices: [
-                        x - w / 2,
-                        y - h / 2,
-                        w,
-                        h
-                    ]
-                }]
-                return blueprint;
-            }
-
-            executeBP(blueprint, ctx = this.ctx) {
-                const bp = blueprint.slice();
-
-                const commands = bp.map(instruct => function () {
-                    return ctx[instruct.method](...instruct.vertices)
-                })
-                return commands;
-            }
-
             drawMe(ctx = this.ctx, padding = 1.1) {
-                this.drawFns = this.executeBP(this.blueprint())
                 ctx.beginPath();
                 ctx.fillStyle = NumberToHSLa(yToPitch(this.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange));
                 ctx.save();
 
                 this.localRotate();
 
-                this.drawFns.map(f => f());
+                this.blueprint().map(instruct => ctx[instruct.method](...instruct.vertices))
 
                 ctx.fill();
                 ctx.closePath();
@@ -197,15 +189,13 @@
             }
         }
 
-        class Head extends Rect {
+        class Head
+            extends Rect {
             constructor(presets, canvasContext) {
                 super();
                 this.ctx = canvasContext;
                 this.fireTimer = 0;
-                this.fireOn = false; //TODO --> STORE not state
-
                 Object.assign(this, presets);
-
             }
 
             tick(STATE) {
@@ -310,7 +300,6 @@
             mouthHeight: 5
         }, ctxPlayer);
 
-
         const body = new Rect({
             numberInChain: 0.5,
             w: 100,
@@ -337,7 +326,6 @@
             }
         }, ctxPlayer);
 
-
         const legL = {
             ctx: ctxPlayer,
             w: body.w,
@@ -359,7 +347,6 @@
                 else {
                     this.h = this.y;
                 }
-
                 this.drawMe()
             },
             drawMe(ctx = this.ctx) {
@@ -394,20 +381,27 @@
         const legR = Object.assign({}, legL);
         legR.w = legR.w * -1 //direction shift
 
-        flies = []
+        let flies = [{
+            x: 500,
+            y: 500
+        }]
+
+        let timer = 1;
         let necktangles = [];
         necktangles.length = STATE.NECK.rectCount;
         necktangles.fill(1)
         necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}, ctxPlayer))
+
         /*ACTION*/
-        let timer = 0;
-
-
         const loop = function () {
             requestAnimationFrame(loop);
+            timer++;
 
             ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
-            
+
+            ctxBG.fillStyle = "hsla(255, 100%, 00%, 0.10)";
+//            ctxBG.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
             //all States => const headState = ....destructure
 
             if (STATE.loadingFire) {
@@ -427,7 +421,29 @@
             const legsY = body.y;
             legL.tick(Object.assign({legsY: legsY}, STATE), undefined);
             legR.tick(Object.assign({legsY: legsY}, STATE), legL);
+
+            flies.map(f => drawFly(f, timer))
+            flies.forEach(fly => fly.x = fly.x-1)
+
+            if (STATE.fireOn) {
+                flies.forEach(f=>{
+                    if (isColliding(head, f)){
+                        console.log("COLLISON")
+                        f.isDead = true;
+                        ctxBG.fillStyle = "white";
+
+                        flies =flies.filter(f => !f.isDead)
+                    }
+                })
+            }
+            ctxBG.fillRect(0, 0, window.innerWidth, window.innerHeight);
+
+
         }
+        window.setInterval(()=> {
+            flies = spawnFlies(flies, 7, GAME.pitchRange);
+            flies = flies.filter(f => f.x > 0);
+        },3000)
 
         const load = function () {
             canvasBG.width = window.innerWidth;
@@ -436,18 +452,11 @@
             canvasPlayer.height = window.innerHeight;
 //            ctxPlayer.translate(0, canvasPlayer.height);
 //            ctxPlayer.scale(1, -1);
-
             ////this way ==
             ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
             //--that way :
             ctxBG.translate(0, canvasBG.height);
             ctxBG.scale(1, -1);
-            //
-
-            ctxPlayer.fillStyle = 'white';
-            ctxPlayer.rect(0, 0, 100, 100)
-            ctxPlayer.fill()
-
 
             for (let i = 0; i < necktangles.length; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
                 let rect = necktangles[i]
@@ -458,19 +467,27 @@
                 rect.drawMe();
             }
             console.log(necktangles)
-//            loop()
+            loop()
         }
+        window.addEventListener("resize", function () {
+            console.log('asasd')
+            canvasBG.width = window.innerWidth;
+            canvasBG.height = window.innerHeight;
+            canvasPlayer.width = window.innerWidth;
+            canvasPlayer.height = window.innerHeight;
+            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
 
+        });
         /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
             switch (inputCode) {
                 case 49:
-                    return 1;
+                    return 0;
 
                 case 50:
-                    return 2;
+                    return 1;
                 case 51:
-                    return 3;
+                    return 2;
 
                 case 52:
                     return 4;
@@ -496,34 +513,59 @@
 
         }
 
+        const drawFly = function (fly, timer =1, ctx= ctxBG) {
+            const wiggle = 15 * Math.sin(timer/ 45 * Math.PI)
+            ctx.beginPath();
+            ctx.moveTo(fly.x, fly.y + wiggle);
+            ctx.lineTo(fly.x + 5, fly.y+ wiggle + 5);
+            ctx.lineWidth = 10;
+            ctx.strokeStyle = "white";
+            ctx.stroke();
+        }
+
+        const spawnFlies = function(flies, maxNumber, pitchRange) {
+            const theFlies = flies.slice();
+            if (theFlies.length < maxNumber) {
+                const atPitch = Math.random() * pitchRange;
+                const atY = pitchToY(atPitch)
+                theFlies.push({x: window.innerWidth, y: atY})
+            }
+            return theFlies;
+        }
+
+        const isColliding =  function (head, fly) {
+            const {x,y, w, h} = head;
+            const x2 = fly.x;
+            const y2 = fly.y;
+            const spitlength = 200;
+            const spitheight = 50;
+            const rect1 = {
+                x: x+w/2 + spitlength,
+                y: y - h / 2.3,
+            }
+            const rect2 = {
+                x: x2,
+                y: y2
+            }
+            const isXMatch = (rect1.x - rect2.x > 0 &&  rect1.x - Math.abs(rect2.x) < spitlength + 10)
+            const isYMatch = (Math.abs(rect1.y - rect2.y) < spitheight)
+
+            if (isXMatch && isYMatch) {
+                return true;
+            }
+            else {
+                return false;
+            }
+
+        }
+
         function yToPitch(y, endY, startY, pitchR) {
             const units = (endY - startY) / pitchR;
             return (y - startY) / units;
         }
 
         function pitchToY(pitch) {
-            return pitch * ((window.innerHeight - STATE.NECK.startY) / GAME.pitchRange) //-- one NeckUnit
-        }
-
-        const drawTriangle = function (data, ctx, x = STATE.playerX) {
-            ctx.beginPath();
-            const {w, y, h} = data;
-            ctx.moveTo(x - w / 2.4, y);
-            ctx.lineTo(x, y);
-            ctx.lineTo(x - w / 3, y - h);
-            ctx.fillStyle = data.color || "white";
-            ctx.fill();
-        }
-
-        const drawTrapezoid = function (data, ctx, x = STATE.playerX) {
-            ctx.beginPath();
-            const {y, w, h} = data;
-            ctx.moveTo(x - w / 2, y);
-            ctx.lineTo(x + w / 2, y);
-            ctx.lineTo(x + w / 5, y - h);
-            ctx.lineTo(x - w / 5, y - h);
-            ctx.fillStyle = "white";
-            ctx.fill();
+            return  STATE.NECK.startY + pitch * ((GAME.endY - STATE.NECK.startY) / GAME.pitchRange) //-- one NeckUnit
         }
 
         const handleMove = function (inputCode) {
@@ -538,16 +580,6 @@
             }
         }
 
-        const gameUnitsToPixel = function (number) {
-            return number * window.innerWidth / 100
-//            else  if (dimension === "h") {
-//                return number* window.innerHeight/100
-//            }
-//            else {
-//                throw UserException("No Dimension specified")
-//            }
-        }
-
         function NumberToHSLa(number, s = "100%", l = "60%", a = 1) { //HSL is more intuitive then RGB s=100, l =60;
             let num = number;
             if (number > 12) {
@@ -560,19 +592,6 @@
             }
 
             return "hsla" + "(" + h + "," + s + "," + l + "," + a + ")";
-        }
-
-        const stateToRect = function (rect, State, Neck) {
-            //TODO return rect instead of mutating
-            const r = (Object.assign(Object.create(rect))) //copy the class with functions & prototypes
-            const {playerX} = State;
-            r.adjust(Neck);
-            r.x = playerX
-
-            if (r.goalY / r.y < 0.97 || r.goalY / r.y > 1.03) { //if the neck is moving
-                r.localRotation = -10 + Math.random() * 30;
-            }
-            return r;
         }
 
     </script>
