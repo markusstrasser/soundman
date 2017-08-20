@@ -40,6 +40,8 @@
 
 
     </style>
+
+    <script src= "./monophonics.js"></script>
     <script type="text/javascript">
 
         /* EVENT LISTENERS */
@@ -400,9 +402,6 @@
             ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
             ctxBG.fillStyle = "hsla(255, 100%, 00%, 0.10)";
-//            ctxBG.fillRect(0, 0, window.innerWidth, window.innerHeight);
-
-            //all States => const headState = ....destructure
 
             if (STATE.loadingFire) {
                 head.fireTimer++;
@@ -436,6 +435,7 @@
                     }
                 })
             }
+            //this is later in the loop for user to notice
             ctxBG.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
 
@@ -514,7 +514,7 @@
         }
 
         const drawFly = function (fly, timer =1, ctx= ctxBG) {
-            const wiggle = 15 * Math.sin(timer/ 45 * Math.PI)
+            const wiggle = 15 * Math.sin(timer/ 45 * Math.PI) + Math.random() * 2;
             ctx.beginPath();
             ctx.moveTo(fly.x, fly.y + wiggle);
             ctx.lineTo(fly.x + 5, fly.y+ wiggle + 5);
