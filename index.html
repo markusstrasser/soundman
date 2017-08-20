@@ -69,6 +69,7 @@
         window.addEventListener("keydown", function (ev) {
             if (ev.keyCode === 32) {
                 STATE.loadingFire = true;
+                console.log(ev.keyCode)
             } else {
 
                 let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
@@ -213,7 +214,6 @@
 
                 this.y = lastNeckBone.y + lastNeckBone.h / 2 + this.h / 2;
                 this.x = playerX;
-
                 this.fillColor(this.fireTimer)
 
                 this.mouthHeight = this.mouthAnim(this.fireTimer) + 2;
@@ -249,7 +249,7 @@
 
                 //text
                 ctx.fillStyle = "white";
-                ctx.fillText(GAME.note, x-w/4, y-h/6);
+                ctx.fillText(GAME.note, x - w / 4, y - h / 6);
 
             }
 
@@ -468,20 +468,20 @@
             legL.tick(Object.assign({legsY: legsY}, STATE), undefined);
             legR.tick(Object.assign({legsY: legsY}, STATE), legL);
 
-            flies.map(f => drawFly(f, timer))
-            flies.forEach(fly => fly.x = fly.x - 1)
 
-            if (STATE.fireOn) {
-                flies.forEach(f => {
-                    if (isColliding(head, f)) {
+            flies.forEach((fly, idx) => {
+                fly.x = fly.x - 1;
+                drawFly(fly, 30 * idx + timer);
+                if (STATE.fireOn) {
+                    if (isColliding(head, fly)) {
                         console.log("COLLISON")
-                        f.isDead = true;
+                        fly.isDead = true;
                         ctxBG.fillStyle = "white";
 
-                        flies = flies.filter(f => !f.isDead)
+                        flies = flies.filter(fly => !fly.isDead)
                     }
-                })
-            }
+                }
+            })
             //this is later in the loop for user to notice
             ctxBG.fillRect(0, 0, window.innerWidth, window.innerHeight);
 
@@ -504,7 +504,7 @@
 
             ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
 
-            ctxPlayer.font="30px Helvetica";
+            ctxPlayer.font = "30px Helvetica";
 
             //--that way :
             ctxBG.translate(0, canvasBG.height);
@@ -521,15 +521,15 @@
             console.log(necktangles)
 //            loop()
         }
-//        window.addEventListener("resize", function () {
-//            console.log('asasd')
-//            canvasBG.width = window.innerWidth;
-//            canvasBG.height = window.innerHeight;
-//            canvasPlayer.width = window.innerWidth;
-//            canvasPlayer.height = window.innerHeight;
-//            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
-//
-//        });
+        //        window.addEventListener("resize", function () {
+        //            console.log('asasd')
+        //            canvasBG.width = window.innerWidth;
+        //            canvasBG.height = window.innerHeight;
+        //            canvasPlayer.width = window.innerWidth;
+        //            canvasPlayer.height = window.innerHeight;
+        //            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
+        //
+        //        });
         /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
             switch (inputCode) {
