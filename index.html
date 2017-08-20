@@ -41,7 +41,7 @@
 
     </style>
 
-    <script src= "./Monophonics.js"></script>
+    <script src="./Monophonics.js"></script>
     <script type="text/javascript">
 
         /* EVENT LISTENERS */
@@ -70,12 +70,15 @@
             if (ev.keyCode === 32) {
                 STATE.loadingFire = true;
             } else {
-                STATE.NECK.endY = STATE.NECK.startY + handleInput(ev.keyCode) * (GAME.endY - STATE.NECK.startY) / 10;
-            }
-            let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
-            if (xDelta !== 0) {
-                STATE.moving = true;
-                STATE.playerX += 2 * xDelta;
+
+                let xDelta = handleMove(ev.keyCode) * STATE.moveSpeed;
+                if (xDelta !== 0) {
+                    STATE.moving = true;
+                    STATE.playerX += 2 * xDelta;
+                }
+                else {
+                    STATE.NECK.endY = STATE.NECK.startY + handleInput(ev.keyCode) * (GAME.endY - STATE.NECK.startY) / 10;
+                }
             }
 
         });
@@ -103,7 +106,9 @@
         const GAME = {
             pitchRange: 12,
             FPS: 60,
-            endY: window.innerHeight
+            endY: window.innerHeight,
+            baseMidi: 48,
+            currentMidi: 52
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         };
 
@@ -241,6 +246,10 @@
                 ctx.fillRect(x, y, 20, 20);
 
                 ctx.fillRect(x + w / 4, y - 30 - mouthHeight / 2, w / 4, mouthHeight)
+
+                //text
+                ctx.fillStyle = "white";
+                ctx.fillText(GAME.note, x-w/4, y-h/6);
             }
 
             mouthAnim(time) {
@@ -396,6 +405,9 @@
 
         /*ACTION*/
         let pitchdetect;
+        let roundBuffer = [];
+        roundBuffer.length = 10;
+        roundBuffer.fill(Math.random())
 
         const loop = function () {
             requestAnimationFrame(loop);
@@ -405,9 +417,31 @@
             /* SOUND STUFF */
             pitchdetect.updateEnergyValues();
             const winnerBin = pitchdetect.normBinIdx;
-            const midi = pitchdetect.binToMidi(winnerBin);
-//            console.log(midi);
+            const midi = Number(pitchdetect.binToMidi(winnerBin).toFixed(2));
+            GAME.currentMidi = midi;
+            const pitchHeight = midi - GAME.baseMidi;
+            GAME.pitchRel = pitchHeight;
+            const silence = -1 - GAME.baseMidi;
+            const roundedPitch = Math.round(pitchHeight);
+            GAME.note = pitchdetect.midiToNoteName(midi) || ""
 
+
+            roundBuffer.push(roundedPitch);
+            if (roundBuffer.length > 9) {
+                roundBuffer.shift();
+            }
+            if (roundBuffer.every(e => e === roundedPitch) && roundBuffer[0] !== silence) {
+                STATE.loadingFire = true;
+            }
+            else {
+                STATE.loadingFire = false;
+                head.fireTimer = 0;
+                STATE.fireOn = false;
+            }
+
+            if (pitchHeight > 0 && pitchHeight <= GAME.pitchRange) {
+                STATE.NECK.endY = pitchToY(pitchHeight)
+            }
             // ---------------------------
 
 
@@ -434,16 +468,16 @@
             legR.tick(Object.assign({legsY: legsY}, STATE), legL);
 
             flies.map(f => drawFly(f, timer))
-            flies.forEach(fly => fly.x = fly.x-1)
+            flies.forEach(fly => fly.x = fly.x - 1)
 
             if (STATE.fireOn) {
-                flies.forEach(f=>{
-                    if (isColliding(head, f)){
+                flies.forEach(f => {
+                    if (isColliding(head, f)) {
                         console.log("COLLISON")
                         f.isDead = true;
                         ctxBG.fillStyle = "white";
 
-                        flies =flies.filter(f => !f.isDead)
+                        flies = flies.filter(f => !f.isDead)
                     }
                 })
             }
@@ -452,13 +486,13 @@
 
 
         }
-        window.setInterval(()=> {
+        window.setInterval(() => {
             flies = spawnFlies(flies, 7, GAME.pitchRange);
             flies = flies.filter(f => f.x > 0);
-        },3000)
+        }, 3000)
 
         const load = function () {
-            pitchdetect = new Monophonics();
+            pitchdetect = new Monophonics(loop);
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
@@ -466,7 +500,9 @@
 //            ctxPlayer.translate(0, canvasPlayer.height);
 //            ctxPlayer.scale(1, -1);
             ////this way ==
-            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
+            ctxPlayer.font="30px Helvetica";
+            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
+
             //--that way :
             ctxBG.translate(0, canvasBG.height);
             ctxBG.scale(1, -1);
@@ -480,7 +516,7 @@
                 rect.drawMe();
             }
             console.log(necktangles)
-            loop()
+//            loop()
         }
         window.addEventListener("resize", function () {
             console.log('asasd')
@@ -526,17 +562,17 @@
 
         }
 
-        const drawFly = function (fly, timer =1, ctx= ctxBG) {
-            const wiggle = 15 * Math.sin(timer/ 45 * Math.PI) + Math.random() * 2;
+        const drawFly = function (fly, timer = 1, ctx = ctxBG) {
+            const wiggle = 15 * Math.sin(timer / 45 * Math.PI) + Math.random() * 2;
             ctx.beginPath();
             ctx.moveTo(fly.x, fly.y + wiggle);
-            ctx.lineTo(fly.x + 5, fly.y+ wiggle + 5);
+            ctx.lineTo(fly.x + 5, fly.y + wiggle + 5);
             ctx.lineWidth = 10;
             ctx.strokeStyle = "white";
             ctx.stroke();
         }
 
-        const spawnFlies = function(flies, maxNumber, pitchRange) {
+        const spawnFlies = function (flies, maxNumber, pitchRange) {
             const theFlies = flies.slice();
             if (theFlies.length < maxNumber) {
                 const atPitch = Math.random() * pitchRange;
@@ -546,21 +582,21 @@
             return theFlies;
         }
 
-        const isColliding =  function (head, fly) {
-            const {x,y, w, h} = head;
+        const isColliding = function (head, fly) {
+            const {x, y, w, h} = head;
             const x2 = fly.x;
             const y2 = fly.y;
             const spitlength = 200;
             const spitheight = 50;
             const rect1 = {
-                x: x+w/2 + spitlength,
+                x: x + w / 2 + spitlength,
                 y: y - h / 2.3,
             }
             const rect2 = {
                 x: x2,
                 y: y2
             }
-            const isXMatch = (rect1.x - rect2.x > 0 &&  rect1.x - Math.abs(rect2.x) < spitlength + 10)
+            const isXMatch = (rect1.x - rect2.x > 0 && rect1.x - Math.abs(rect2.x) < spitlength + 10)
             const isYMatch = (Math.abs(rect1.y - rect2.y) < spitheight)
 
             if (isXMatch && isYMatch) {
@@ -578,7 +614,7 @@
         }
 
         function pitchToY(pitch) {
-            return  STATE.NECK.startY + pitch * ((GAME.endY - STATE.NECK.startY) / GAME.pitchRange) //-- one NeckUnit
+            return STATE.NECK.startY + pitch * ((GAME.endY - STATE.NECK.startY) / GAME.pitchRange) //-- one NeckUnit
         }
 
         const handleMove = function (inputCode) {
