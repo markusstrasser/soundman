@@ -41,7 +41,7 @@
 
     </style>
 
-    <script src= "./monophonics.js"></script>
+    <script src= "./Monophonics.js"></script>
     <script type="text/javascript">
 
         /* EVENT LISTENERS */
@@ -395,9 +395,21 @@
         necktangles = necktangles.map((e, i) => new Rect({numberInChain: i}, ctxPlayer))
 
         /*ACTION*/
+        let pitchdetect;
+
         const loop = function () {
             requestAnimationFrame(loop);
             timer++;
+
+
+            /* SOUND STUFF */
+            pitchdetect.updateEnergyValues();
+            const winnerBin = pitchdetect.normBinIdx;
+            const midi = pitchdetect.binToMidi(winnerBin);
+//            console.log(midi);
+
+            // ---------------------------
+
 
             ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
@@ -446,6 +458,7 @@
         },3000)
 
         const load = function () {
+            pitchdetect = new Monophonics();
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
