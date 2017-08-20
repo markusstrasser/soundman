@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="94e1f05e-fff9-4fcd-aac2-771b4383b53d" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -21,8 +20,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3434">
-              <caret line="251" column="52" lean-forward="false" selection-start-line="251" selection-start-column="52" selection-end-line="251" selection-end-column="52" />
+            <state relative-caret-position="201">
+              <caret line="517" column="36" lean-forward="false" selection-start-line="517" selection-start-column="36" selection-end-line="517" selection-end-column="36" />
               <folding>
                 <element signature="n#html#0;n#!!top" expanded="false" />
                 <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />
@@ -57,8 +56,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>const</find>
-      <find>tick(</find>
       <find>console.lo</find>
       <find>timer</find>
       <find>timer++</find>
@@ -67,7 +64,6 @@
       <find>yto</find>
       <find>handlein</find>
       <find>game.endy</find>
-      <find>rect</find>
       <find>necktangles</find>
       <find>Game.endY</find>
       <find>32</find>
@@ -87,6 +83,9 @@
       <find>load</find>
       <find>loop</find>
       <find>drawme</find>
+      <find>new Rect</find>
+      <find>rect</find>
+      <find>numberinch</find>
     </findStrings>
     <replaceStrings>
       <replace>head</replace>
@@ -249,12 +248,12 @@
       <workItem from="1503129954567" duration="10107000" />
       <workItem from="1503207894236" duration="1845000" />
       <workItem from="1503213598101" duration="1696000" />
-      <workItem from="1503215409119" duration="814000" />
+      <workItem from="1503215409119" duration="1344000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="95190000" />
+    <option name="totallyTimeSpent" value="95720000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1417" height="796" extended-state="0" />
@@ -584,8 +583,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3434">
-          <caret line="251" column="52" lean-forward="false" selection-start-line="251" selection-start-column="52" selection-end-line="251" selection-end-column="52" />
+        <state relative-caret-position="201">
+          <caret line="517" column="36" lean-forward="false" selection-start-line="517" selection-start-column="36" selection-end-line="517" selection-end-column="36" />
           <folding>
             <element signature="n#html#0;n#!!top" expanded="false" />
             <element signature="n#body#0;n#html#0;n#!!top" expanded="false" />

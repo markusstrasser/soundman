@@ -250,6 +250,7 @@
                 //text
                 ctx.fillStyle = "white";
                 ctx.fillText(GAME.note, x-w/4, y-h/6);
+
             }
 
             mouthAnim(time) {
@@ -500,8 +501,10 @@
 //            ctxPlayer.translate(0, canvasPlayer.height);
 //            ctxPlayer.scale(1, -1);
             ////this way ==
-            ctxPlayer.font="30px Helvetica";
+
             ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
+
+            ctxPlayer.font="30px Helvetica";
 
             //--that way :
             ctxBG.translate(0, canvasBG.height);
@@ -512,21 +515,21 @@
                 rect.y = STATE.NECK.startY + rect.numberInChain * rect.h;
                 rect.goalY = rect.y;
                 rect.color = NumberToHSLa(yToPitch(rect.y, GAME.endY, STATE.NECK.startY, GAME.pitchRange));
-                rect.w = rect.w - (5 * rect.numberInChain); //calcRectWidth
+                rect.w = rect.w - (4 * rect.numberInChain); //calcRectWidth
                 rect.drawMe();
             }
             console.log(necktangles)
 //            loop()
         }
-        window.addEventListener("resize", function () {
-            console.log('asasd')
-            canvasBG.width = window.innerWidth;
-            canvasBG.height = window.innerHeight;
-            canvasPlayer.width = window.innerWidth;
-            canvasPlayer.height = window.innerHeight;
-            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
-
-        });
+//        window.addEventListener("resize", function () {
+//            console.log('asasd')
+//            canvasBG.width = window.innerWidth;
+//            canvasBG.height = window.innerHeight;
+//            canvasPlayer.width = window.innerWidth;
+//            canvasPlayer.height = window.innerHeight;
+//            ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height)
+//
+//        });
         /* UTILITY FUNCTIONS */
         const handleInput = function (inputCode) {
             switch (inputCode) {
