@@ -16,6 +16,7 @@
 <head>
     <canvas id="canvBG"></canvas>
     <canvas id="canvPlayer"></canvas>
+    <canvas id="canvUI"></canvas>
     <style type="text/css">
         body {
             margin: 0;
@@ -30,9 +31,17 @@
             margin: 0px;
         }
 
-        #canvPlayer {
+        #canvUI {
             background-color: transparent;
             z-index: 0;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #canvPlayer {
+            background-color: transparent;
+            z-index: 1;
             position: fixed;
             width: 100vw;
             height: 100vh;
@@ -98,8 +107,10 @@
 
         const canvasPlayer = document.getElementById("canvPlayer")
         const canvasBG = document.getElementById("canvBG")
+        const canvasUI = document.getElementById("canvUI")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
+        const ctxUI = canvasUI.getContext("2d");
         ctxPlayer.lineCap = "round";
         ctxBG.lineCap = "round";
 
@@ -112,6 +123,81 @@
             currentMidi: 52
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         };
+
+        const UI = class {
+            constructor(canvContext) {
+                this.ctx = canvContext;
+                this.w = 300;
+                this.h = 100;
+                this.y = this.ctx.canvas.height;
+                this.x = 0;
+                this.userData = {
+                    points: 0,
+                    superPoints: 0
+                };
+                this.gradient = this.ctx.createLinearGradient(0, 0, this.w, 0);
+                this.gradient.addColorStop("0", "magenta")
+                this.gradient.addColorStop("0.5", "blue")
+                this.gradient.addColorStop("1.0", "red");
+                this.margin = 50;
+
+
+            }
+
+            addPoint() {
+                this.userData.points++;
+                this.drawMe();
+                if (this.userData.points=== 5) {
+                    this.addSuperPoint();
+                }
+            }
+
+            addSuperPoint() {
+                let padding = 50;
+                const that = this;
+                return new Promise(function (resolve, reject) {
+                    const anim = window.setInterval(function () {
+                        if (padding < 0) {
+                            resolve();
+                            window.clearInterval(anim)
+                        }
+                        that.drawMe(padding);
+                        padding--;
+                    }, 20)
+                })
+                    .then(() => {
+                        this.userData.superPoints++;
+                        this.userData.points -= 5;
+                        this.drawMe()
+                    })
+            }
+
+            drawMe(padding = 50, ctx = this.ctx) {
+                this.y = this.ctx.canvas.height;
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+                ctx.beginPath();
+                ctx.strokeStyle = this.gradient;
+                ctx.lineWidth = 8;
+
+                //Superpoints
+                for (let i = 0; i < this.userData.superPoints; i++) {
+                    const startX = this.x + 20;
+                    ctx.strokeRect(startX + i * 50, this.y - this.h / 2, this.w / 10, 30)
+                }
+
+                //normal Points
+                ctx.strokeStyle = "blue";
+                ctx.lineWidth = 5;
+
+                for (let j = 0; j < this.userData.points; j++) {
+                    const startX = this.x + 30 + this.margin * this.userData.superPoints;
+                    ctx.strokeRect(startX + j * padding, this.y - this.h / 3, this.w / 20, 15)
+                }
+                ctx.closePath();
+
+            }
+        }
 
         const Rect = class {
             constructor(presets, canvasContext) {
@@ -474,8 +560,10 @@
                 drawFly(fly, 30 * idx + timer);
                 if (STATE.fireOn) {
                     if (isColliding(head, fly)) {
-                        console.log("COLLISON")
                         fly.isDead = true;
+
+                        UIBar.addPoint()
+
                         ctxBG.fillStyle = "white";
 
                         flies = flies.filter(fly => !fly.isDead)
@@ -492,23 +580,30 @@
             flies = flies.filter(f => f.x > 0);
         }, 3000)
 
+        const UIBar = new UI(ctxUI);
         const load = function () {
             pitchdetect = new Monophonics(loop);
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
             canvasPlayer.height = window.innerHeight;
+            canvasUI.width = window.innerWidth;
+            canvasUI.height = window.innerHeight;
 //            ctxPlayer.translate(0, canvasPlayer.height);
 //            ctxPlayer.scale(1, -1);
             ////this way ==
 
             ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
+            ctxUI.setTransform(1, 0, 0, -1, 0, canvasUI.height);
 
             ctxPlayer.font = "30px Helvetica";
 
             //--that way :
             ctxBG.translate(0, canvasBG.height);
             ctxBG.scale(1, -1);
+
+            UIBar.drawMe();
+
 
             for (let i = 0; i < necktangles.length; i++) { //copies class but NOT by REFERENCE!! otherwise huge fuckup
                 let rect = necktangles[i]
@@ -531,6 +626,8 @@
         //
         //        });
         /* UTILITY FUNCTIONS */
+
+
         const handleInput = function (inputCode) {
             switch (inputCode) {
                 case 49:
