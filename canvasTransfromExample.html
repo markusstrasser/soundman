@@ -3,6 +3,33 @@
 <head>
 
     <script type="text/javascript">
+
+        function AngleBetweenPoints(a, b) {
+            deltaY = a.y - b.y;
+            deltaX = a.x - b.x;
+
+            lineAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+            if (deltaY < 0) {
+                lineAngle = lineAngle + 360;
+            }
+            return Math.round(lineAngle);
+
+        }
+
+//        console.log(Angle(1,0))
+//        console.log(Angle(1,1))
+//        console.log(Angle(1,2))
+//        console.log(Angle(1,0.5))
+//        console.log(Angle(0,1))
+//        console.log(Angle(-0.2, 1))
+//        console.log(Angle(-1, 1))
+//        console.log(Angle(-30, 1))
+//        console.log(Angle(0, -1))
+//        console.log(Angle(-1, -1))
+//        console.log(Angle(-0.2, -1))
+//        console.log(Angle(-30, -1))
+
         function drawShape() {
 
             // get the canvas element using the DOM
@@ -11,46 +38,184 @@
             canvas.height = window.innerHeight;
             canvas.width = window.innerWidth;
 
+            ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
+
+
+
+
+            const Splinter = class {
+                constructor (dimensions, ctx){
+                    this.x = dimensions.x;
+                    this.y = dimensions.y;
+                    this.h = dimensions.h;
+                    this.w = dimensions.w;
+                    this.ctx= ctx;
+
+                    this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
+
+
+                    this.lookToVec = {x:0, y: 1} //upwards;
+                    //this.ascend() promise
+                }
+                drawMe(ctx=this.ctx){
+                    ctx.clearRect(0,0,2000,2000)
+                    const {x,y,w,h} = this;
+                    ctx.save();
+
+                    ctx.translate(this.x, this.y)
+                    ctx.rotate(-this.localRotation * Math.PI / 180)
+                    ctx.translate(-(this.x), -(this.y))
+
+//                    this.localRotate();
+
+                    ctx.beginPath()
+                    ctx.moveTo(x+w/18, y + h / 2.1); //hattop
+                    ctx.lineTo(x, y + h / 1.4); //hattop
+                    ctx.lineTo(x - w / 30, y + h / 2.1);
+                    ctx.fill();
+
+                    ctx.restore();
+                }
+                localRotate(ctx = this.ctx) {
+
+//                drawRect(box, ctxPlayer, playerX + 200);
+                }
+
+                moveTowards(pos, steps){
+                    const that = this;
+                    const goalY = pos.y;
+                    const goalX = pos.x;
+
+                    let speed = 1;
+                    return new Promise(function(resolve, reject) {
+                        const attackAnim = window.setInterval(function(){
+                            console.log(goalX, goalY);
+                            this.localRotation = AngleBetweenPoints({x:goalX, y:goalY}, pos)
+
+                            if (speed < 5 || (goalX - that.x)/goalX < 0.9) { //not there yet -- don't slow down
+                                speed+= 0.1 * speed/10;
+                            }
+                            //IF COLLISION w TARGET
+                            if (goalX / that.x > 0.9 &&
+                                goalX / that.x < 1.1 &&
+                                goalY/that.y > 0.9 &&
+                                goalY/that.y < 1.1) {
+
+                                console.log('resolved splinter')
+                                resolve()
+                                window.clearInterval(attackAnim);
+                            }
+
+                            that.x -= speed * (that.x - goalX) / steps;
+                            that.y -= speed * (that.y - goalY) / steps;
+                            //rotationhack
+                            that.drawMe();
+                        },30)
+                    })
+                }
+            }
+
             const RacistGoblin = class {
                 constructor(canvasCtx) {
                     this.ctx = canvasCtx;
                     this.x = this.ctx.canvas.width - 200;
-                    this.y = 0;
+                    this.y = 400;
                     this.h = 500;
-                    this.w = 200;
+                    this.w = 300;
+                    //this.emerge()
                 }
 
                 drawMe() {
                     this.drawLeg({
-                        w: this.w / 6,
-                        h: this.h / 6,
+                        w: this.w / 5,
+                        h: this.h / 5,
                         y: this.y,
                         x: this.x
                     })
                     this.drawLeg({
-                        w: -this.w / 6,
-                        h: this.h / 6,
+                        w: -this.w / 5,
+                        h: this.h / 5,
                         y: this.y,
                         x: this.x
                     })
+                    this.drawNeck();
+
+                    this.drawBelly();
+                    this.drawHead();
+//                    this.drawSpitz();
+
+                }
+                drawHead(ctx = this.ctx) {
+                    ctx.beginPath();
+                    const {x, w, y, h} = this;
+                    ctx.moveTo(x - w / 7, y + h / 4.2);
+                    ctx.lineTo(x + w / 6, y + h / 4);
+                    ctx.lineTo(x+w/18, y + h / 2.1); //triangle seat
+                    ctx.lineTo(x-w/23, y + h / 2.1); //
 
 
+                    ctx.lineTo(x - w / 7, y + h / 2.2);
+
+                    ctx.lineTo(x - w / 4.5, y + h / 3); //nosetop
+
+                    ctx.lineTo(x - w / 7, y + h / 2.8);
+                    ctx.fillStyle = "black";
+                    ctx.fill();
+
+                    //eye
+                    ctx.beginPath();
+                    ctx.strokeStyle = "red";
+                    ctx.rect(x - w/10, y+h/2.6, h/25, h/25)
+                    ctx.rect(x - w/10, y+h/2.6, h/34, h/34)
+                    ctx.rect(x - w/10, y+h/2.6, h/50, h/50)
+                    ctx.lineWidth= 2;
+                    ctx.stroke();
+
+                    //mouth
+                    ctx.beginPath();
+                    ctx.fillStyle ="red"
+                    ctx.fillRect(x - w/7, y+h/3.5, h/25, h/40)
+
+                }
+
+                drawNeck(ctx = this.ctx) {
+                    ctx.beginPath();
+                    const {x, w, y, h} = this;
+                    ctx.moveTo(x - w / 12, y + this.h / 5);
+                    ctx.lineTo(x + w / 12, y + this.h / 5);
+                    ctx.lineTo(x + w / 15, y + this.h / 4);
+                    ctx.lineTo(x - w / 15, y + this.h / 4);
+                    ctx.fillStyle = "black";
+                    ctx.fill();
                 }
 
                 drawLeg(dimensions, ctx = this.ctx) {
                     ctx.beginPath();
                     const {x, w, y, h} = dimensions;
-                    ctx.moveTo(x - w / 2.4, y);
+                    ctx.moveTo(x - w / 2, y);
                     ctx.lineTo(x, y);
                     ctx.lineTo(x - w / 3, y - h);
                     ctx.fillStyle = "black";
                     ctx.fill();
                 }
+
+                drawBelly(ctx = this.ctx) {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y + this.h / 10, this.h / 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = 'yellow';
+                    ctx.fill();
+                }
+
             }
 
             let goblin = new RacistGoblin(ctx);
+            let splinter = new Splinter(goblin, ctx);
 
             goblin.drawMe();
+            splinter.drawMe();
+            splinter.moveTowards({x:200, y:800}, 2000)
+
+            goblin.drawLeg({x: 200, y: 300, w: 200, h: 500})
 
 
             // Make sure we don't execute when canvas isn't supported
@@ -79,6 +244,10 @@
 
             ctx.fillRect(200, 200, 10, 10);
 
+        }
+
+        window.onload = function () {
+            drawShape();
         }
 
 
