@@ -3,54 +3,88 @@
 <head>
 
     <script type="text/javascript">
-        function drawShape(){
+        function drawShape() {
 
             // get the canvas element using the DOM
             var canvas = document.getElementById('mycanvas');
+            var ctx = canvas.getContext('2d');
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+
+            const RacistGoblin = class {
+                constructor(canvasCtx) {
+                    this.ctx = canvasCtx;
+                    this.x = this.ctx.canvas.width - 200;
+                    this.y = 0;
+                    this.h = 500;
+                    this.w = 200;
+                }
+
+                drawMe() {
+                    this.drawLeg({
+                        w: this.w / 6,
+                        h: this.h / 6,
+                        y: this.y,
+                        x: this.x
+                    })
+                    this.drawLeg({
+                        w: -this.w / 6,
+                        h: this.h / 6,
+                        y: this.y,
+                        x: this.x
+                    })
+
+
+                }
+
+                drawLeg(dimensions, ctx = this.ctx) {
+                    ctx.beginPath();
+                    const {x, w, y, h} = dimensions;
+                    ctx.moveTo(x - w / 2.4, y);
+                    ctx.lineTo(x, y);
+                    ctx.lineTo(x - w / 3, y - h);
+                    ctx.fillStyle = "black";
+                    ctx.fill();
+                }
+            }
+
+            let goblin = new RacistGoblin(ctx);
+
+            goblin.drawMe();
+
 
             // Make sure we don't execute when canvas isn't supported
-            if (canvas.getContext){
 
-                // use getContext to use the canvas for drawing
-                var ctx = canvas.getContext('2d');
+            // use getContext to use the canvas for drawing
 
-                var sin = Math.sin(Math.PI/4);
-                var cos = Math.cos(Math.PI/4);
-                ctx.fillStyle="red"
+            var sin = Math.sin(Math.PI / 4);
+            var cos = Math.cos(Math.PI / 4);
+            ctx.fillStyle = "red"
 
-                ctx.translate(200, 200);
-                var c = 0;
+            ctx.translate(200, 200);
+            var c = 0;
 
-                for (var i=0; i < 2; i++) {
-                    c = Math.floor(255 / 10 * i);
-                    ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
-                    ctx.fillRect(0, 0, 100, 100);
-                    ctx.transform(cos, -sin, sin, cos, 0, 0);
-                }
-                ctx.translate(0, 0);
-
-                ctx.setTransform(1, 0, 0, 1, 0, 0);
-                ctx.fillStyle = "rgba(100, 100, 255, 0.5)";
-                ctx.fillRect(50, 50, 100, 100);
-                ctx.fillStyle="red"
-
-                ctx.fillRect(200,200,10,10);
-
-
-
-
+            for (var i = 0; i < 2; i++) {
+                c = Math.floor(255 / 10 * i);
+                ctx.fillStyle = "rgb(" + c + "," + c + "," + c + ")";
+                ctx.fillRect(0, 0, 100, 100);
+                ctx.transform(cos, -sin, sin, cos, 0, 0);
             }
+            ctx.translate(0, 0);
 
-            else {
-                alert('You need Safari or Firefox 1.5+ to see this demo.');
-            }
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = "rgba(100, 100, 255, 0.5)";
+            ctx.fillRect(50, 50, 100, 100);
+            ctx.fillStyle = "red"
+
+            ctx.fillRect(200, 200, 10, 10);
+
         }
 
 
     </script>
 </head>
 
-<body onload="drawShape();">
 <canvas id="mycanvas" width="900" height="900"></canvas>
 </body>
 

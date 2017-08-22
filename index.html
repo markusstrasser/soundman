@@ -140,8 +140,6 @@
                 this.gradient.addColorStop("0.5", "blue")
                 this.gradient.addColorStop("1.0", "red");
                 this.margin = 50;
-
-
             }
 
             addPoint() {
@@ -280,6 +278,41 @@
                 ctx.fill();
                 ctx.closePath();
                 ctx.restore()
+            }
+        }
+
+        const RacistGoblin = class {
+            constructor(canvasCtx) {
+                this.ctx = canvasCtx;
+                this.x = this.ctx.canvas.width - 200;
+                this.y = 0;
+                this.h = 500;
+                this.w = 200;
+            }
+            drawMe() {
+                this.drawLeg({
+                    w: this.w/6,
+                    h: this.h/6,
+                    y: this.y,
+                    x: this.x
+                })
+                this.drawLeg({
+                    w: -this.w/6,
+                    h: this.h/6,
+                    y: this.y,
+                    x: this.x
+                })
+
+
+            }
+            drawLeg(dimensions, ctx=this.ctx) {
+                    ctx.beginPath();
+                    const {x, w, y, h} = dimensions;
+                    ctx.moveTo(x - w / 2.4, y);
+                    ctx.lineTo(x, y);
+                    ctx.lineTo(x - w / 3, y - h);
+                    ctx.fillStyle = "white";
+                    ctx.fill();
             }
         }
 
@@ -477,6 +510,7 @@
         }
 
         const legR = Object.assign({}, legL);
+        const goblin = new RacistGoblin(ctxPlayer)
         legR.w = legR.w * -1 //direction shift
 
         let flies = [{
@@ -500,7 +534,7 @@
             requestAnimationFrame(loop);
             timer++;
 
-
+            goblin.drawMe();
             /* SOUND STUFF */
             pitchdetect.updateEnergyValues();
             const winnerBin = pitchdetect.normBinIdx;

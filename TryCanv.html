@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html>
+<canvas id="mycanvas" width="900" height="900"></canvas>
+<head>
+
+    <script type="text/javascript">
+
+        // get the canvas element using the DOM
+        var canvas = document.getElementById('mycanvas');
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        var ctx = canvas.getContext('2d');
+
+        ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
+
+        const RacistGoblin = class {
+            constructor(canvasCtx) {
+                this.ctx = canvasCtx;
+                this.x = this.ctx.canvas.width - 200;
+                this.h = 500;
+                this.y = 100;
+
+                this.w = 100;
+            }
+
+            drawMe(dimens = this) {
+                const {x,y,w,h} = this;
+                this.drawLeg({
+                    w: w / 6,
+                    h: h / 6,
+                    y: this.h/5,
+                    x: x
+                })
+                this.drawLeg({
+                    w: -w / 6,
+                    h:  h / 6,
+                    y:  this.h/5,
+                    x: x
+                })
+
+
+            }
+            drawLeg(dimensions, ctx = this.ctx) {
+                ctx.beginPath();
+                const {x, w, y, h} = dimensions;
+                ctx.moveTo(x - w / 2.4, y);
+                ctx.lineTo(x, y);
+                ctx.lineTo(x - w / 3, y - h);
+                ctx.fillStyle = "black";
+                ctx.fill();
+                ctx.closePath();
+            }
+        }
+
+        let goblin = new RacistGoblin(ctx);
+        window.onload = function() {
+
+            goblin.drawMe();
+
+            ctx.beginPath();
+            const {x, w, y, h} = {w: 100, h: 200, y: 400, x: 200};
+            ctx.moveTo(x - w / 2.4, y);
+            ctx.lineTo(x, y);
+            ctx.lineTo(x - w / 3, y - h);
+            ctx.fillStyle = "black";
+            ctx.fill();
+        }
+
+
+
+        // Make sure we don't execute when canvas isn't supported
+
+        // use getContext to use the canvas for drawing
+
+
+
+    </script>
+</head>
+
+
+</html>
