@@ -5,7 +5,17 @@
     <script type="text/javascript">
 
         //GameObject lookAt
-
+        //splinter extends GameObject
+        //Goblin.attach (splinter) == if child...center of rotation is parent
+        //rotation center
+        //tip / endpoint
+        //moveTo
+        //lookAt
+        //localRotate
+        //rotate (degree, center)
+        //stopAnims --> overwrite anims
+        //then
+        //transform
 
         function AngleBetweenPoints(a, b={x: 1, y:0}) {
             deltaY = a.y - b.y;
@@ -52,66 +62,37 @@
                     this.y = 400;
                     this.h = 100;
                     this.w = 50;
-                    this.tipPos = {
-                        x: this.x + this.w/2,
-                        y: this.y + this.h/2
-                    }
                     this.ctx= canvCtx;
-
                     this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
-
-
-                    this.lookToVec = {x:0, y: 1} //upwards;
-                    //this.ascend() promise
                 }
                 drawMe(ctx=this.ctx){
-                    this.tipPos = {
-                        x: this.x + this.w/2,
-                        y: this.y + this.h/2
-                    }
                     ctx.clearRect(0,0,2000,2000)
                     const {x,y,w,h} = this;
 
-
-//                    this.localRotate();
-
-//                    ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
                     ctx.save();
                     ctx.beginPath()
                     this.localRotate();
                     ctx.strokeStyle = "red";
 
-//                    ctx.beginPath()
-//
-//                    ctx.rect(40, 40, ctx.canvas.width-100, ctx.canvas.height-100);
-//                    ctx.stroke()
                     ctx.moveTo(x, y);
                     ctx.lineTo(x + w/2, y + h);
                     ctx.lineTo(x + w, y);
                     ctx.fill();
                     ctx.closePath();
                     ctx.restore();
-
-
                 }
                 localRotate(ctx = this.ctx) {
-
-
                     const center= {x: this.x + this.w/2, y: this.y + this.h/2}
                     ctx.translate(center.x ,center.y)
-
                     ctx.rotate((this.localRotation -90) * Math.PI / 180)
                     ctx.translate(-center.x, -center.y)
-
                     console.log(this.localRotation)
-
-//                drawRect(box, ctxPlayer, playerX + 200);
                 }
 
-                moveTowards(pos, steps){
+                moveTowards(target, steps){
                     const that = this;
-                    const goalY = pos.y;
-                    const goalX = pos.x;
+                    const goalY = target.y;
+                    const goalX = target.x;
 
                     let speed = 1;
                     return new Promise(function(resolve, reject) {
@@ -238,7 +219,7 @@
 //            splinter.drawMe();
             splinter.moveTowards({x:700, y:100}, 500)
 
-            goblin.drawLeg({x: 200, y: 300, w: 200, h: 500})
+//            goblin.drawLeg({x: 200, y: 300, w: 200, h: 500})
 
 
             // Make sure we don't execute when canvas isn't supported
