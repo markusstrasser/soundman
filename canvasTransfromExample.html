@@ -4,7 +4,10 @@
 
     <script type="text/javascript">
 
-        function AngleBetweenPoints(a, b) {
+        //GameObject lookAt
+
+
+        function AngleBetweenPoints(a, b={x: 1, y:0}) {
             deltaY = a.y - b.y;
             deltaX = a.x - b.x;
 
@@ -17,39 +20,43 @@
 
         }
 
-//        console.log(Angle(1,0))
-//        console.log(Angle(1,1))
-//        console.log(Angle(1,2))
-//        console.log(Angle(1,0.5))
-//        console.log(Angle(0,1))
-//        console.log(Angle(-0.2, 1))
-//        console.log(Angle(-1, 1))
-//        console.log(Angle(-30, 1))
-//        console.log(Angle(0, -1))
-//        console.log(Angle(-1, -1))
-//        console.log(Angle(-0.2, -1))
-//        console.log(Angle(-30, -1))
+        let splinter;
+        let CTX;
 
         function drawShape() {
 
             // get the canvas element using the DOM
             var canvas = document.getElementById('mycanvas');
-            var ctx = canvas.getContext('2d');
             canvas.height = window.innerHeight;
             canvas.width = window.innerWidth;
-
-            ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
-
+            CTX = canvas.getContext('2d');
 
 
+            CTX.setTransform(1, 0, 0, -1, 0, canvas.height);
+
+
+            const Anim = class{
+                constructor() {
+                }
+                rotate(degrees, origin, steps){
+
+                }
+                moveTo(to, from){
+
+                }
+            }
 
             const Splinter = class {
-                constructor (dimensions, ctx){
-                    this.x = dimensions.x;
-                    this.y = dimensions.y;
-                    this.h = dimensions.h;
-                    this.w = dimensions.w;
-                    this.ctx= ctx;
+                constructor (canvCtx){
+                    this.x = 0;
+                    this.y = 400;
+                    this.h = 100;
+                    this.w = 50;
+                    this.tipPos = {
+                        x: this.x + this.w/2,
+                        y: this.y + this.h/2
+                    }
+                    this.ctx= canvCtx;
 
                     this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
 
@@ -58,25 +65,45 @@
                     //this.ascend() promise
                 }
                 drawMe(ctx=this.ctx){
+                    this.tipPos = {
+                        x: this.x + this.w/2,
+                        y: this.y + this.h/2
+                    }
                     ctx.clearRect(0,0,2000,2000)
                     const {x,y,w,h} = this;
-                    ctx.save();
 
-                    ctx.translate(this.x, this.y)
-                    ctx.rotate(-this.localRotation * Math.PI / 180)
-                    ctx.translate(-(this.x), -(this.y))
 
 //                    this.localRotate();
 
+//                    ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
+                    ctx.save();
                     ctx.beginPath()
-                    ctx.moveTo(x+w/18, y + h / 2.1); //hattop
-                    ctx.lineTo(x, y + h / 1.4); //hattop
-                    ctx.lineTo(x - w / 30, y + h / 2.1);
-                    ctx.fill();
+                    this.localRotate();
+                    ctx.strokeStyle = "red";
 
+//                    ctx.beginPath()
+//
+//                    ctx.rect(40, 40, ctx.canvas.width-100, ctx.canvas.height-100);
+//                    ctx.stroke()
+                    ctx.moveTo(x, y);
+                    ctx.lineTo(x + w/2, y + h);
+                    ctx.lineTo(x + w, y);
+                    ctx.fill();
+                    ctx.closePath();
                     ctx.restore();
+
+
                 }
                 localRotate(ctx = this.ctx) {
+
+
+                    const center= {x: this.x + this.w/2, y: this.y + this.h/2}
+                    ctx.translate(center.x ,center.y)
+
+                    ctx.rotate((this.localRotation -90) * Math.PI / 180)
+                    ctx.translate(-center.x, -center.y)
+
+                    console.log(this.localRotation)
 
 //                drawRect(box, ctxPlayer, playerX + 200);
                 }
@@ -89,10 +116,8 @@
                     let speed = 1;
                     return new Promise(function(resolve, reject) {
                         const attackAnim = window.setInterval(function(){
-                            console.log(goalX, goalY);
-                            this.localRotation = AngleBetweenPoints({x:goalX, y:goalY}, pos)
 
-                            if (speed < 5 || (goalX - that.x)/goalX < 0.9) { //not there yet -- don't slow down
+                            if (speed < 5 || (goalX - that.x)/goalX < 0.97) { //not there yet -- don't slow down
                                 speed+= 0.1 * speed/10;
                             }
                             //IF COLLISION w TARGET
@@ -105,6 +130,7 @@
                                 resolve()
                                 window.clearInterval(attackAnim);
                             }
+                            that.localRotation = AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
 
                             that.x -= speed * (that.x - goalX) / steps;
                             that.y -= speed * (that.y - goalY) / steps;
@@ -122,7 +148,6 @@
                     this.y = 400;
                     this.h = 500;
                     this.w = 300;
-                    //this.emerge()
                 }
 
                 drawMe() {
@@ -142,8 +167,6 @@
 
                     this.drawBelly();
                     this.drawHead();
-//                    this.drawSpitz();
-
                 }
                 drawHead(ctx = this.ctx) {
                     ctx.beginPath();
@@ -208,12 +231,12 @@
 
             }
 
-            let goblin = new RacistGoblin(ctx);
-            let splinter = new Splinter(goblin, ctx);
+            let goblin = new RacistGoblin(CTX);
+            splinter = new Splinter(CTX);
 
             goblin.drawMe();
-            splinter.drawMe();
-            splinter.moveTowards({x:200, y:800}, 2000)
+//            splinter.drawMe();
+            splinter.moveTowards({x:700, y:100}, 500)
 
             goblin.drawLeg({x: 200, y: 300, w: 200, h: 500})
 
@@ -224,9 +247,8 @@
 
             var sin = Math.sin(Math.PI / 4);
             var cos = Math.cos(Math.PI / 4);
-            ctx.fillStyle = "red"
+            CTX.fillStyle = "red"
 
-            ctx.translate(200, 200);
             var c = 0;
 
             for (var i = 0; i < 2; i++) {
@@ -235,14 +257,13 @@
                 ctx.fillRect(0, 0, 100, 100);
                 ctx.transform(cos, -sin, sin, cos, 0, 0);
             }
-            ctx.translate(0, 0);
 
-            ctx.setTransform(1, 0, 0, 1, 0, 0);
-            ctx.fillStyle = "rgba(100, 100, 255, 0.5)";
-            ctx.fillRect(50, 50, 100, 100);
-            ctx.fillStyle = "red"
+            CTX.setTransform(1, 0, 0, 1, 0, 0);
+            CTX.fillStyle = "rgba(100, 100, 255, 0.5)";
+            CTX.fillRect(50, 50, 100, 100);
+            CTX.fillStyle = "red"
 
-            ctx.fillRect(200, 200, 10, 10);
+            CTX.fillRect(200, 200, 10, 10);
 
         }
 

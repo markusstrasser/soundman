@@ -9,9 +9,9 @@
         var canvas = document.getElementById('mycanvas');
         canvas.height = window.innerHeight;
         canvas.width = window.innerWidth;
-        var ctx = canvas.getContext('2d');
+        var CTX = canvas.getContext('2d');
 
-        ctx.setTransform(1, 0, 0, -1, 0, canvas.height);
+        CTX.setTransform(1, 0, 0, -1, 0, canvas.height);
 
         const RacistGoblin = class {
             constructor(canvasCtx) {
@@ -52,18 +52,18 @@
             }
         }
 
-        let goblin = new RacistGoblin(ctx);
+        let goblin = new RacistGoblin(CTX);
         window.onload = function() {
 
             goblin.drawMe();
 
-            ctx.beginPath();
+            CTX.beginPath();
             const {x, w, y, h} = {w: 100, h: 200, y: 400, x: 200};
-            ctx.moveTo(x - w / 2.4, y);
-            ctx.lineTo(x, y);
-            ctx.lineTo(x - w / 3, y - h);
-            ctx.fillStyle = "black";
-            ctx.fill();
+            CTX.moveTo(x - w / 2.4, y);
+            CTX.lineTo(x, y);
+            CTX.lineTo(x - w / 3, y - h);
+            CTX.fillStyle = "black";
+            CTX.fill();
         }
 
 
