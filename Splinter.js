@@ -5,7 +5,8 @@ const Splinter = class {
         this.h = 100;
         this.w = 50;
         this.ctx= canvCtx;
-        this.localRotation = 0; //gets inverted @ rotateFN ==> prefer clockwise
+        this.collidedAtPos = [];
+        this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
     }
     drawMe(ctx=this.ctx){
         ctx.clearRect(0,0,2000,2000)
@@ -15,6 +16,7 @@ const Splinter = class {
         ctx.beginPath()
         this.localRotate();
         ctx.strokeStyle = "red";
+        ctx.fillStyle= 'red'
 
         ctx.moveTo(x, y);
         ctx.lineTo(x + w/2, y + h);
@@ -28,31 +30,34 @@ const Splinter = class {
         ctx.translate(center.x ,center.y)
         ctx.rotate((this.localRotation -90) * Math.PI / 180)
         ctx.translate(-center.x, -center.y)
+        // console.log(this.localRotation)
     }
 
     moveTowards(target, steps){
         const that = this;
-        const goalY = target.y;
-        const goalX = target.x;
-
+        window.clearInterval(window.attackAnim) //change direction without doubting yourself splinterboy
         let speed = 1;
         return new Promise(function(resolve, reject) {
-            const attackAnim = window.setInterval(function(){
-
+            window.attackAnim = window.setInterval(function(){
+                let goalY = target.y;
+                let goalX = target.x;
                 if (speed < 5 || (goalX - that.x)/goalX < 0.97) { //not there yet -- don't slow down
                     speed+= 0.1 * speed/10;
                 }
                 //IF COLLISION w TARGET
-                if (goalX / that.x > 0.9 &&
-                    goalX / that.x < 1.1 &&
-                    goalY/that.y > 0.9 &&
-                    goalY/that.y < 1.1) {
+
+
+                if (goalX / that.x > 0.99 &&
+                    goalX / that.x < 1.01 &&
+                    goalY/that.y > 0.99 &&
+                    goalY/that.y < 1.01) {
 
                     console.log('resolved splinter')
                     resolve()
+                    that.collidedAtPos.push({x: that.x, y: that.y})
                     window.clearInterval(attackAnim);
                 }
-                that.localRotation = AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
+                that.localRotation = that.AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
 
                 that.x -= speed * (that.x - goalX) / steps;
                 that.y -= speed * (that.y - goalY) / steps;
@@ -61,5 +66,16 @@ const Splinter = class {
             },30)
         })
     }
+    AngleBetweenPoints(a, b={x: 1, y:0}) {
+        let deltaY = a.y - b.y;
+        let deltaX = a.x - b.x;
+
+        let lineAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+        if (deltaY < 0) {
+            lineAngle = lineAngle + 360;
+        }
+        return Math.round(lineAngle);
+
+    }
 }
-//        splinter.moveTowards({x:700, y:100}, 500)

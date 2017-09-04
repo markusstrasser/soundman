@@ -1,30 +1,57 @@
 const RacistGoblin = class {
-    constructor(canvasCtx) {
+    constructor(canvasCtx, audioCtx) {
         this.ctx = canvasCtx;
+        this.audioContext = audioCtx;
         this.x = 700;
         this.y = 130;
         this.h = 700;
         this.w = 400;
+        this.goalY = 130;
         this.emerged = false;
+        this.mouthHeight =5;
+        this.timer = 0;
     }
     emerge() {
-        const goalY = this.y;
+        let that = this;
         if (this.emerged) {
             return this.drawMe();
         }
-        this.y = 0;
+        this.y = -300;
+        let speed = 1;
         const anim = window.setInterval(function(){
-            if (this.y /goalY > 1.04 || this.y / goalY < 0.95) {
-                this.y++;
+            if (that.y - that.goalY < 0.99 || that.goalY/that.y > 1.1) { //strange logic
+                speed += 0.1;
+                that.y += 5 + speed //+ sin;
+
             }
             else {
-                this.emerged = true;
+                that.emerged = true;
+                setTimeout(function() {
+                    that.initOsc();
+                    that.playOsc(438 + Math.random() * 5);
+                },20)
+
                 window.clearInterval(anim)
             }
-        })
+        }, 30)
+    }
+
+    initOsc() {
+        const {audioContext} = this;
+        this.osc = audioContext.createOscillator();
+        this.osc.connect(audioContext.destination);
+    }
+    playOsc(freq, type ="sine", osc=this.osc) {
+        osc.type = type;
+        osc.frequency.value = freq;
+        this.oscOn = true;
+        osc.start();
+        // this.osc.disconnect(audioContext.destination);
     }
 
     drawMe() {
+
+
         this.drawLeg({
             w: this.w / 5,
             h: this.h / 5,
@@ -69,9 +96,15 @@ const RacistGoblin = class {
         ctx.stroke();
 
         //mouth
+        if (this.oscOn) {
+            this.timer+= 0.1
+            this.mouthHeight += Math.sin(Math.PI * this.timer) * 3
+        }
+
         ctx.beginPath();
-        ctx.fillStyle ="red"
-        ctx.fillRect(x - w/7, y+h/3.5, h/25, h/40)
+        ctx.fillStyle ="black"
+        ctx.fillRect(x - w/7, y+h/3.5 -this.mouthHeight/1.3, h/25, this.mouthHeight)
+        ctx.fillStyle = 'red'; //so that it doesn't override splinter --- they are using same canvas...
 
     }
 

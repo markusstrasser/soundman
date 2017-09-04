@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="94e1f05e-fff9-4fcd-aac2-771b4383b53d" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/RacistGoblin.js" afterPath="$PROJECT_DIR$/RacistGoblin.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Splinter.js" afterPath="$PROJECT_DIR$/Splinter.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/canvasTransfromExample.html" afterPath="$PROJECT_DIR$/canvasTransfromExample.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -17,26 +20,45 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1088">
-              <caret line="44" column="9" lean-forward="false" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
+            <state relative-caret-position="269">
+              <caret line="245" column="45" lean-forward="false" selection-start-line="245" selection-start-column="45" selection-end-line="245" selection-end-column="45" />
               <folding>
                 <element signature="e#2093#2638#0" expanded="false" />
                 <element signature="e#2697#3013#0" expanded="false" />
-                <element signature="e#3866#4010#0" expanded="false" />
-                <element signature="e#4055#4859#0" expanded="false" />
-                <element signature="e#4894#6449#0" expanded="false" />
-                <element signature="e#12210#12847#0" expanded="false" />
-                <element signature="e#12912#13235#0" expanded="false" />
-                <element signature="e#13304#13617#0" expanded="false" />
-                <element signature="e#13668#14375#0" expanded="false" />
-                <element signature="e#14428#14532#0" expanded="false" />
-                <element signature="e#14567#14695#0" expanded="false" />
-                <element signature="e#14745#15013#0" expanded="false" />
-                <element signature="e#15083#15514#0" expanded="false" />
+                <element signature="e#4296#4440#0" expanded="false" />
+                <element signature="e#4485#5289#0" expanded="false" />
+                <element signature="e#5324#6879#0" expanded="false" />
+                <element signature="e#12724#13361#0" expanded="false" />
+                <element signature="e#13426#13749#0" expanded="false" />
+                <element signature="e#13818#14131#0" expanded="false" />
+                <element signature="e#14182#14889#0" expanded="false" />
+                <element signature="e#14942#15046#0" expanded="false" />
+                <element signature="e#15081#15209#0" expanded="false" />
+                <element signature="e#15597#16028#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="canvasTransfromExample.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="705">
+              <caret line="47" column="7" lean-forward="false" selection-start-line="47" selection-start-column="7" selection-end-line="123" selection-end-column="13" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Splinter.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Splinter.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="285">
+              <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -51,11 +73,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="RacistGoblin.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="RacistGoblin.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RacistGoblin.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1560">
-              <caret line="104" column="1" lean-forward="false" selection-start-line="104" selection-start-column="1" selection-end-line="104" selection-end-column="1" />
+            <state relative-caret-position="1590">
+              <caret line="106" column="103" lean-forward="false" selection-start-line="106" selection-start-column="103" selection-end-line="106" selection-end-column="103" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="6060">
+              <caret line="404" column="7" lean-forward="false" selection-start-line="404" selection-start-column="7" selection-end-line="412" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -64,8 +96,8 @@
       <file leaf-file-name="Rects.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Rects.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="152">
-              <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+            <state relative-caret-position="2130">
+              <caret line="142" column="0" lean-forward="false" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -75,14 +107,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>spawnflies</find>
-      <find>canvas.height</find>
-      <find>canvPla</find>
-      <find>canvasPla</find>
-      <find>basemi</find>
-      <find>basemidi</find>
-      <find>drawme</find>
-      <find>head</find>
       <find>rect</find>
       <find>new prom</find>
       <find>localrotate</find>
@@ -101,10 +125,18 @@
       <find>splinter.</find>
       <find>load</find>
       <find>canvasPlay</find>
-      <find>splinter</find>
       <find>emerge</find>
-      <find>goblin</find>
       <find>UI</find>
+      <find>new</find>
+      <find>goblin</find>
+      <find>racist</find>
+      <find>golbin</find>
+      <find>goblin.emer</find>
+      <find>emerg</find>
+      <find>go</find>
+      <find>audiocontext</find>
+      <find>racest</find>
+      <find>splinter</find>
     </findStrings>
     <replaceStrings>
       <replace>head</replace>
@@ -122,13 +154,14 @@
         <option value="$PROJECT_DIR$/monophonics.js" />
         <option value="$PROJECT_DIR$/Monophonics.js" />
         <option value="$PROJECT_DIR$/TryCanv.html" />
-        <option value="$PROJECT_DIR$/canvasTransfromExample.html" />
         <option value="$PROJECT_DIR$/Rects.js" />
-        <option value="$PROJECT_DIR$/RacistGoblin.js" />
         <option value="$PROJECT_DIR$/UIBar.js" />
         <option value="$PROJECT_DIR$/UIBar copy.js" />
+        <option value="$PROJECT_DIR$/canvasTransfromExample.html" />
         <option value="$PROJECT_DIR$/index.html" />
         <option value="$PROJECT_DIR$/index.html" />
+        <option value="$PROJECT_DIR$/Splinter.js" />
+        <option value="$PROJECT_DIR$/RacistGoblin.js" />
       </list>
     </option>
   </component>
@@ -182,7 +215,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -195,6 +227,7 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -275,12 +308,16 @@
       <workItem from="1504030643311" duration="6000" />
       <workItem from="1504030698317" duration="5000" />
       <workItem from="1504505540994" duration="48000" />
-      <workItem from="1504505598939" duration="1521000" />
+      <workItem from="1504505598939" duration="1617000" />
+      <workItem from="1504507345164" duration="718000" />
+      <workItem from="1504509154422" duration="1688000" />
+      <workItem from="1504510965551" duration="1478000" />
+      <workItem from="1504512770416" duration="884000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="125901000" />
+    <option name="totallyTimeSpent" value="130765000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1907" height="954" extended-state="0" />
@@ -289,12 +326,12 @@
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14630309" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.14420556" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -316,13 +353,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/PitchEater.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="825">
@@ -330,17 +360,16 @@
           <folding>
             <element signature="e#2093#2638#0" expanded="false" />
             <element signature="e#2697#3013#0" expanded="false" />
-            <element signature="e#3866#4010#0" expanded="false" />
-            <element signature="e#4055#4859#0" expanded="false" />
-            <element signature="e#4894#6449#0" expanded="false" />
-            <element signature="e#12210#12847#0" expanded="false" />
-            <element signature="e#12912#13235#0" expanded="false" />
-            <element signature="e#13304#13617#0" expanded="false" />
-            <element signature="e#13668#14375#0" expanded="false" />
-            <element signature="e#14428#14532#0" expanded="false" />
-            <element signature="e#14567#14695#0" expanded="false" />
-            <element signature="e#14745#15013#0" expanded="false" />
-            <element signature="e#15083#15514#0" expanded="false" />
+            <element signature="e#4296#4440#0" expanded="false" />
+            <element signature="e#4485#5289#0" expanded="false" />
+            <element signature="e#5324#6879#0" expanded="false" />
+            <element signature="e#12724#13361#0" expanded="false" />
+            <element signature="e#13426#13749#0" expanded="false" />
+            <element signature="e#13818#14131#0" expanded="false" />
+            <element signature="e#14182#14889#0" expanded="false" />
+            <element signature="e#14942#15046#0" expanded="false" />
+            <element signature="e#15081#15209#0" expanded="false" />
+            <element signature="e#15597#16028#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -359,17 +388,16 @@
           <folding>
             <element signature="e#2093#2638#0" expanded="false" />
             <element signature="e#2697#3013#0" expanded="false" />
-            <element signature="e#3866#4010#0" expanded="false" />
-            <element signature="e#4055#4859#0" expanded="false" />
-            <element signature="e#4894#6449#0" expanded="false" />
-            <element signature="e#12210#12847#0" expanded="false" />
-            <element signature="e#12912#13235#0" expanded="false" />
-            <element signature="e#13304#13617#0" expanded="false" />
-            <element signature="e#13668#14375#0" expanded="false" />
-            <element signature="e#14428#14532#0" expanded="false" />
-            <element signature="e#14567#14695#0" expanded="false" />
-            <element signature="e#14745#15013#0" expanded="false" />
-            <element signature="e#15083#15514#0" expanded="false" />
+            <element signature="e#4296#4440#0" expanded="false" />
+            <element signature="e#4485#5289#0" expanded="false" />
+            <element signature="e#5324#6879#0" expanded="false" />
+            <element signature="e#12724#13361#0" expanded="false" />
+            <element signature="e#13426#13749#0" expanded="false" />
+            <element signature="e#13818#14131#0" expanded="false" />
+            <element signature="e#14182#14889#0" expanded="false" />
+            <element signature="e#14942#15046#0" expanded="false" />
+            <element signature="e#15081#15209#0" expanded="false" />
+            <element signature="e#15597#16028#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -388,17 +416,16 @@
           <folding>
             <element signature="e#2093#2638#0" expanded="false" />
             <element signature="e#2697#3013#0" expanded="false" />
-            <element signature="e#3866#4010#0" expanded="false" />
-            <element signature="e#4055#4859#0" expanded="false" />
-            <element signature="e#4894#6449#0" expanded="false" />
-            <element signature="e#12210#12847#0" expanded="false" />
-            <element signature="e#12912#13235#0" expanded="false" />
-            <element signature="e#13304#13617#0" expanded="false" />
-            <element signature="e#13668#14375#0" expanded="false" />
-            <element signature="e#14428#14532#0" expanded="false" />
-            <element signature="e#14567#14695#0" expanded="false" />
-            <element signature="e#14745#15013#0" expanded="false" />
-            <element signature="e#15083#15514#0" expanded="false" />
+            <element signature="e#4296#4440#0" expanded="false" />
+            <element signature="e#4485#5289#0" expanded="false" />
+            <element signature="e#5324#6879#0" expanded="false" />
+            <element signature="e#12724#13361#0" expanded="false" />
+            <element signature="e#13426#13749#0" expanded="false" />
+            <element signature="e#13818#14131#0" expanded="false" />
+            <element signature="e#14182#14889#0" expanded="false" />
+            <element signature="e#14942#15046#0" expanded="false" />
+            <element signature="e#15081#15209#0" expanded="false" />
+            <element signature="e#15597#16028#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -417,17 +444,16 @@
           <folding>
             <element signature="e#2093#2638#0" expanded="false" />
             <element signature="e#2697#3013#0" expanded="false" />
-            <element signature="e#3866#4010#0" expanded="false" />
-            <element signature="e#4055#4859#0" expanded="false" />
-            <element signature="e#4894#6449#0" expanded="false" />
-            <element signature="e#12210#12847#0" expanded="false" />
-            <element signature="e#12912#13235#0" expanded="false" />
-            <element signature="e#13304#13617#0" expanded="false" />
-            <element signature="e#13668#14375#0" expanded="false" />
-            <element signature="e#14428#14532#0" expanded="false" />
-            <element signature="e#14567#14695#0" expanded="false" />
-            <element signature="e#14745#15013#0" expanded="false" />
-            <element signature="e#15083#15514#0" expanded="false" />
+            <element signature="e#4296#4440#0" expanded="false" />
+            <element signature="e#4485#5289#0" expanded="false" />
+            <element signature="e#5324#6879#0" expanded="false" />
+            <element signature="e#12724#13361#0" expanded="false" />
+            <element signature="e#13426#13749#0" expanded="false" />
+            <element signature="e#13818#14131#0" expanded="false" />
+            <element signature="e#14182#14889#0" expanded="false" />
+            <element signature="e#14942#15046#0" expanded="false" />
+            <element signature="e#15081#15209#0" expanded="false" />
+            <element signature="e#15597#16028#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -558,7 +584,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/voiceFood.html" />
-    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html" />
     <entry file="file://$PROJECT_DIR$/../daca/mouse-oscillator/index.html" />
     <entry file="file://$PROJECT_DIR$/PitchEater.html">
       <provider selected="true" editor-type-id="text-editor">
@@ -594,31 +619,14 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
           <caret line="143" column="28" lean-forward="true" selection-start-line="143" selection-start-column="28" selection-end-line="143" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Goblin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/Goblin.js" />
     <entry file="file://$PROJECT_DIR$/../daca/mouse-oscillator/SwagLib-27-02-2017.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="269">
           <caret line="32" column="9" lean-forward="false" selection-start-line="32" selection-start-column="9" selection-end-line="32" selection-end-column="9" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-767">
-          <caret line="2" column="0" lean-forward="false" selection-start-line="2" selection-start-column="0" selection-end-line="2" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -626,7 +634,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-946">
           <caret line="16" column="12" lean-forward="true" selection-start-line="16" selection-start-column="12" selection-end-line="16" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -638,26 +645,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/RacistGoblin.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1560">
-          <caret line="104" column="1" lean-forward="false" selection-start-line="104" selection-start-column="1" selection-end-line="104" selection-end-column="1" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Rects.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="152">
-          <caret line="142" column="0" lean-forward="true" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
+        <state relative-caret-position="2130">
+          <caret line="142" column="0" lean-forward="false" selection-start-line="142" selection-start-column="0" selection-end-line="142" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/UIBar copy.js">
+    <entry file="file://$PROJECT_DIR$/UIBar copy.js" />
+    <entry file="file://$PROJECT_DIR$/canvasTransfromExample.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="960">
-          <caret line="64" column="51" lean-forward="false" selection-start-line="64" selection-start-column="51" selection-end-line="64" selection-end-column="51" />
+        <state relative-caret-position="705">
+          <caret line="47" column="7" lean-forward="false" selection-start-line="47" selection-start-column="7" selection-end-line="123" selection-end-column="13" />
           <folding />
         </state>
       </provider>
@@ -670,25 +670,48 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../daca/web-piano/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="6060">
+          <caret line="404" column="7" lean-forward="false" selection-start-line="404" selection-start-column="7" selection-end-line="412" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1088">
-          <caret line="44" column="9" lean-forward="false" selection-start-line="44" selection-start-column="9" selection-end-line="44" selection-end-column="9" />
+        <state relative-caret-position="269">
+          <caret line="245" column="45" lean-forward="false" selection-start-line="245" selection-start-column="45" selection-end-line="245" selection-end-column="45" />
           <folding>
             <element signature="e#2093#2638#0" expanded="false" />
             <element signature="e#2697#3013#0" expanded="false" />
-            <element signature="e#3866#4010#0" expanded="false" />
-            <element signature="e#4055#4859#0" expanded="false" />
-            <element signature="e#4894#6449#0" expanded="false" />
-            <element signature="e#12210#12847#0" expanded="false" />
-            <element signature="e#12912#13235#0" expanded="false" />
-            <element signature="e#13304#13617#0" expanded="false" />
-            <element signature="e#13668#14375#0" expanded="false" />
-            <element signature="e#14428#14532#0" expanded="false" />
-            <element signature="e#14567#14695#0" expanded="false" />
-            <element signature="e#14745#15013#0" expanded="false" />
-            <element signature="e#15083#15514#0" expanded="false" />
+            <element signature="e#4296#4440#0" expanded="false" />
+            <element signature="e#4485#5289#0" expanded="false" />
+            <element signature="e#5324#6879#0" expanded="false" />
+            <element signature="e#12724#13361#0" expanded="false" />
+            <element signature="e#13426#13749#0" expanded="false" />
+            <element signature="e#13818#14131#0" expanded="false" />
+            <element signature="e#14182#14889#0" expanded="false" />
+            <element signature="e#14942#15046#0" expanded="false" />
+            <element signature="e#15081#15209#0" expanded="false" />
+            <element signature="e#15597#16028#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Splinter.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="0" lean-forward="true" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/RacistGoblin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1590">
+          <caret line="106" column="103" lean-forward="false" selection-start-line="106" selection-start-column="103" selection-end-line="106" selection-end-column="103" />
+          <folding />
         </state>
       </provider>
     </entry>

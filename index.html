@@ -134,11 +134,22 @@
             FPS: 60,
             endY: window.innerHeight,
             baseMidi: 48,
-            currentMidi: 52
+            currentMidi: 52,
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         };
 
+        let AUDIO_CTX;
+        try {
+            window.AudioContext = window.AudioContext || // Fix up for prefixing
+                window.webkitAudioContext ||
+                window.mozAudioContext ||
+                window.oAudioContext ||
+                window.msAudioContext;
 
+            AUDIO_CTX = new AudioContext();
+        } catch (e) {
+            alert('Web Audio API is not supported in this browser');
+        }
 
         const head = new Head({
             x: 150,
@@ -228,8 +239,10 @@
 
         const legR = Object.assign({}, legL);
         legR.w = legR.w * -1 //direction shift
+        const UIBar = new UI(ctxUI);
 
-        const goblin = new RacistGoblin(ctxEnemy)
+
+        const goblin = new RacistGoblin(ctxEnemy, AUDIO_CTX)
         let splinter = new Splinter(ctxEnemy);
         splinter.localRotation = 90;
         splinter.w = 40;
@@ -293,7 +306,6 @@
             // ---------------------------
 
 
-
             ctxBG.fillStyle = "hsla(255, 100%, 00%, 0.10)";
             splinter.drawMe();
 //            splinter.moveTowards(head, 3000)
@@ -345,9 +357,9 @@
             flies = flies.filter(f => f.x > 0);
         }, 3000)
 
-        const UIBar = new UI(ctxUI);
         const load = function () {
-            pitchdetect = new Monophonics(loop);
+            pitchdetect = new Monophonics(loop); //callback after permission granted = loop
+
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
@@ -365,6 +377,7 @@
             ctxUI.setTransform(1, 0, 0, -1, 0, canvasUI.height);
 
             ctxPlayer.font = "30px Helvetica";
+            goblin.emerge();
 
             //--that way :
             ctxBG.translate(0, canvasBG.height);

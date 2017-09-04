@@ -17,18 +17,7 @@
         //then
         //transform
 
-        function AngleBetweenPoints(a, b={x: 1, y:0}) {
-            deltaY = a.y - b.y;
-            deltaX = a.x - b.x;
-
-            lineAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-            if (deltaY < 0) {
-                lineAngle = lineAngle + 360;
-            }
-            return Math.round(lineAngle);
-
-        }
+        function
 
         let splinter;
         let CTX;
@@ -111,7 +100,7 @@
                                 resolve()
                                 window.clearInterval(attackAnim);
                             }
-                            that.localRotation = AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
+                            that.localRotation = that.AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
 
                             that.x -= speed * (that.x - goalX) / steps;
                             that.y -= speed * (that.y - goalY) / steps;
@@ -119,6 +108,18 @@
                             that.drawMe();
                         },30)
                     })
+                }
+                AngleBetweenPoints(a, b={x: 1, y:0}) {
+                    deltaY = a.y - b.y;
+                    deltaX = a.x - b.x;
+
+                    lineAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
+
+                    if (deltaY < 0) {
+                        lineAngle = lineAngle + 360;
+                    }
+                    return Math.round(lineAngle);
+
                 }
             }
 
