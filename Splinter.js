@@ -7,6 +7,7 @@ const Splinter = class {
         this.ctx= canvCtx;
         this.collidedAtPos = [];
         this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
+
     }
     drawMe(ctx=this.ctx){
         ctx.clearRect(0,0,2000,2000)
@@ -33,7 +34,7 @@ const Splinter = class {
         // console.log(this.localRotation)
     }
 
-    moveTowards(target, steps){
+    moveTowards(target, steps = 400){
         const that = this;
         window.clearInterval(window.attackAnim) //change direction without doubting yourself splinterboy
         let speed = 1;
@@ -49,13 +50,16 @@ const Splinter = class {
 
                 if (goalX / that.x > 0.99 &&
                     goalX / that.x < 1.01 &&
-                    goalY/that.y > 0.99 &&
-                    goalY/that.y < 1.01) {
+                    goalY/ that.y > 0.99 &&
+                    goalY/ that.y < 1.01) {
 
                     console.log('resolved splinter')
                     resolve()
                     that.collidedAtPos.push({x: that.x, y: that.y})
                     window.clearInterval(attackAnim);
+                }
+                if (!goalX || !goalY) {
+                    console.alert("goalPos bug")
                 }
                 that.localRotation = that.AngleBetweenPoints({x:goalX, y:goalY}, {x: that.x, y: that.y})
 

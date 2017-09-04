@@ -1,0 +1,35 @@
+<html>
+<body>
+
+</body>
+<script type="text/javascript">
+
+    const a = function (time) {
+        return new Promise(function (resolve, rej) {
+            window.setTimeout(function () {
+                console.log(time, "yolo")
+                resolve()
+            }, time)
+        })
+    }
+
+    const g = [1000, 2000, 4000];
+    const f = Promise.all([a(1000).then(() => a(3333))])
+
+    function* tt() {
+//        const subPromises = g.map(e => a(e));
+//        console.log(subPromises)
+            console.log(yield)
+            const g = yield a(2000)
+            console.log('FADSD')
+//        }
+//        catch (error) {
+//            "Didn't work"
+//        }
+    }
+
+    tt().next();
+
+</script>
+</html>
+

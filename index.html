@@ -18,10 +18,12 @@
     <canvas id="canvPlayer" class="canv"></canvas>
     <canvas id="canvUI" class="canv"></canvas>
     <canvas id="canvEnemy" class="canv"></canvas>
+    <canvas id="canvExplode" class="canv"></canvas>
     <style type="text/css">
         body {
             margin: 0;
         }
+
         .canv {
             position: fixed;
             width: 100vw;
@@ -29,19 +31,26 @@
             margin: 0px;
             background-color: transparent;
         }
+
         #canvBG {
             background-color: #000;
             z-index: -1;
         }
+
         #canvUI {
             z-index: 0;
         }
 
+
         #canvPlayer {
             z-index: 1;
         }
+
         #canvEnemy {
             z-index: 2;
+        }
+        #canvExplode {
+            z-index: 3;
         }
     </style>
 
@@ -72,19 +81,6 @@
             //points
             //so 1 unit always equals same pixels
             scaler: window.innerWidth / 100,
-        }
-
-        function AngleBetweenPoints(a, b={x: 1, y:0}) {
-            deltaY = a.y - b.y;
-            deltaX = a.x - b.x;
-
-            lineAngle = Math.atan2(deltaY, deltaX) * 180 / Math.PI;
-
-            if (deltaY < 0) {
-                lineAngle = lineAngle + 360;
-            }
-            return Math.round(lineAngle);
-
         }
 
         window.addEventListener("keydown", function (ev) {
@@ -121,8 +117,10 @@
         const canvasEnemy = document.getElementById("canvEnemy")
         const canvasBG = document.getElementById("canvBG")
         const canvasUI = document.getElementById("canvUI")
+        const canvasExplode = document.getElementById("canvExplode")
         const ctxPlayer = canvasPlayer.getContext("2d");
         const ctxEnemy = canvasEnemy.getContext("2d");
+        const ctxExplode = canvasExplode.getContext("2d");
         const ctxBG = canvasBG.getContext("2d");
         const ctxUI = canvasUI.getContext("2d");
         ctxPlayer.lineCap = "round";
@@ -135,6 +133,10 @@
             endY: window.innerHeight,
             baseMidi: 48,
             currentMidi: 52,
+            goblinFreq: 440,
+            playerMidi: -59,
+            toPlayer: false,
+            toGob: true
             //breakNeckSpeed? LLOLOLOL ROFL HELICOPTER ILLUMINATE CONFIRMED HOAX O@2
         };
 
@@ -242,13 +244,16 @@
         const UIBar = new UI(ctxUI);
 
 
-        const goblin = new RacistGoblin(ctxEnemy, AUDIO_CTX)
+        const goblin = new RacistGoblin({
+            ctx: ctxEnemy,
+            audioContext: AUDIO_CTX,
+            freq: 440
+        });
         let splinter = new Splinter(ctxEnemy);
         splinter.localRotation = 90;
         splinter.w = 40;
-        splinter.x = goblin.x - goblin.w/20;
-        splinter.y = goblin.y + goblin.h/2.1;
-
+        splinter.x = goblin.x - goblin.w / 20;
+        splinter.y = goblin.y + goblin.h / 2.1;
 
 
         let flies = [{
@@ -270,7 +275,9 @@
 
         const loop = function () {
 
-            requestAnimationFrame(loop);
+            if (!GAME.over) {
+                requestAnimationFrame(loop);
+            }
             timer++;
             ctxPlayer.clearRect(0, 0, window.innerWidth, window.innerHeight);
 
@@ -286,16 +293,21 @@
             const roundedPitch = Math.round(pitchHeight);
             GAME.note = pitchdetect.midiToNoteName(midi) || ""
 
+//            console.log(midi, pitchdetect.isHarmonic(winnerBin));
 
-            roundBuffer.push(roundedPitch);
-            if (roundBuffer.length > 9) {
+            if (pitchdetect.isHarmonic(winnerBin)) {
+                roundBuffer.push(roundedPitch);
+            }
+            if (roundBuffer.length > 7) {
                 roundBuffer.shift();
             }
             if (roundBuffer.every(e => e === roundedPitch) && roundBuffer[0] !== silence) {
                 STATE.loadingFire = true;
+                GAME.playerMidi = roundBuffer[0];
             }
             else {
                 STATE.loadingFire = false;
+                GAME.playerMidi = silence;
                 head.fireTimer = 0;
                 STATE.fireOn = false;
             }
@@ -303,7 +315,41 @@
             if (pitchHeight > 0 && pitchHeight <= GAME.pitchRange) {
                 STATE.NECK.endY = pitchToY(pitchHeight)
             }
+            GAME.synced = false;
             // ---------------------------
+            if (GAME.playerMidi % 12 === Math.round(pitchdetect.hzToMidi(goblin.freq)) % 12) { //if goblin and player are the are same octave
+                GAME.synced = true;
+            }
+            else {
+                GAME.synced = false;
+            }
+
+            if (!GAME.synced && goblin.emerged && GAME.toGob) {
+                splinter.moveTowards(necktangles[11], 60)
+                    .then(function () {
+                        explode(Object.assign({}, head, {w: 50, h: 50})).then(() => alert("YOU LOST"))
+                        GAME.over = true;
+                    })
+                GAME.toGob = false;
+                GAME.toPlayer = true;
+            }
+            else if (GAME.synced && GAME.toPlayer) {
+                splinter.moveTowards(goblin, 100)
+                    .then(function () {
+                        const pos = Object.assign({}, goblin, {y: goblin.y + 200, w: 50, h: 50}) //change y from belly to head
+                        explode(pos).then(() => alert("YOU WON"))
+                        GAME.over = true;
+                    })
+                GAME.toGob = true;
+                GAME.toPlayer = false;
+            }
+
+            if (GAME.over) {
+                goblin.osc.disconnect();
+            }
+//            if (goblin.emerged && !GAME.synced) {
+//                splinter.moveTowards(necktangles[11])
+//            }
 
 
             ctxBG.fillStyle = "hsla(255, 100%, 00%, 0.10)";
@@ -352,6 +398,48 @@
 
 
         }
+
+        function explode(origin = {x: 400, y: 400, h: 60, w: 60}, ctx = ctxExplode) {
+            window.clearInterval(window.expl)
+            let {x, y, w, h} = origin;
+            let center = {x: x + w / 2, y: y + h / 2}
+            return new Promise(function (resolve, rej) {
+                let counter = 0;
+                window.expl = window.setInterval(function () {
+                    ctx.save();
+
+                    ctx.translate(center.x, center.y)
+                    ctx.rotate((Math.random() * 360 - 90) * Math.PI / 180)
+                    ctx.translate(-center.x, -center.y)
+
+                    ctx.beginPath()
+                    ctx.strokeStyle = 'white'
+                    ctx.strokeWidth = 10;
+
+
+                    ctx.fillStyle = 'rgba(0,0,0,0.9)'
+                    ctx.fillRect(center.x, center.y, w, h);
+                    ctx.rect(center.x, center.y, w, h);
+                    ctx.stroke();
+                    ctx.closePath();
+
+                    ctx.restore();
+
+                    center.y -= 3;
+                    h += 0.5;
+                    w += 0.5;
+                    counter++;
+
+                    if (counter > 120) {
+                        resolve();
+                        window.clearInterval(window.expl)
+                    }
+
+                }, 30)
+            })
+
+        }
+
         window.setInterval(() => {
             flies = spawnFlies(flies, 7, GAME.pitchRange);
             flies = flies.filter(f => f.x > 0);
@@ -362,6 +450,8 @@
 
             canvasBG.width = window.innerWidth;
             canvasBG.height = window.innerHeight;
+            canvasExplode.width = window.innerWidth;
+            canvasExplode.height = window.innerHeight;
             canvasPlayer.width = window.innerWidth;
             canvasEnemy.height = window.innerHeight;
             canvasEnemy.width = window.innerWidth;
@@ -375,6 +465,7 @@
             ctxPlayer.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
             ctxEnemy.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
             ctxUI.setTransform(1, 0, 0, -1, 0, canvasUI.height);
+            ctxExplode.setTransform(1, 0, 0, -1, 0, canvasPlayer.height);
 
             ctxPlayer.font = "30px Helvetica";
             goblin.emerge();

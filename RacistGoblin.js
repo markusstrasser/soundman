@@ -1,7 +1,5 @@
 const RacistGoblin = class {
-    constructor(canvasCtx, audioCtx) {
-        this.ctx = canvasCtx;
-        this.audioContext = audioCtx;
+    constructor(presets) {
         this.x = 700;
         this.y = 130;
         this.h = 700;
@@ -10,6 +8,7 @@ const RacistGoblin = class {
         this.emerged = false;
         this.mouthHeight =5;
         this.timer = 0;
+        Object.assign(this, presets)
     }
     emerge() {
         let that = this;
@@ -41,7 +40,7 @@ const RacistGoblin = class {
         this.osc = audioContext.createOscillator();
         this.osc.connect(audioContext.destination);
     }
-    playOsc(freq, type ="sine", osc=this.osc) {
+    playOsc(freq=this.freq, type ="sine", osc=this.osc) {
         osc.type = type;
         osc.frequency.value = freq;
         this.oscOn = true;
