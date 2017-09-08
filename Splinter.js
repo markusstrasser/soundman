@@ -9,6 +9,16 @@ const Splinter = class {
         this.localRotation = 45; //gets inverted @ rotateFN ==> prefer clockwise
 
     }
+
+    tick(binded) {
+        if (binded.emerging) {
+            this.y = binded.y + 300
+            this.drawMe()
+        }
+        else if(binded.emerged) {
+            this.drawMe()
+        }
+    }
     drawMe(ctx=this.ctx){
         ctx.clearRect(0,0,2000,2000)
         const {x,y,w,h} = this;
@@ -66,7 +76,7 @@ const Splinter = class {
                 that.x -= speed * (that.x - goalX) / steps;
                 that.y -= speed * (that.y - goalY) / steps;
                 //rotationhack
-                that.drawMe();
+                // that.drawMe();
             },30)
         })
     }

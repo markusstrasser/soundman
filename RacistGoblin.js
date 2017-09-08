@@ -8,9 +8,11 @@ const RacistGoblin = class {
         this.emerged = false;
         this.mouthHeight =5;
         this.timer = 0;
+        this.emerging = null;
         Object.assign(this, presets)
     }
     emerge() {
+        this.emerging = true;
         let that = this;
         if (this.emerged) {
             return this.drawMe();
@@ -25,14 +27,22 @@ const RacistGoblin = class {
             }
             else {
                 that.emerged = true;
+                that.emerging = false;
                 setTimeout(function() {
                     that.initOsc();
-                    that.playOsc(438 + Math.random() * 5);
-                },20)
+                    that.playOsc(that.freq);
+                },1000)
 
                 window.clearInterval(anim)
             }
         }, 30)
+    }
+
+    tick(){
+        if (this.emerged || this.emerging !== null) {
+            this.ctx.clearRect(0,0, 2000,2000)
+            this.drawMe();
+        }
     }
 
     initOsc() {
@@ -67,6 +77,7 @@ const RacistGoblin = class {
 
         this.drawBelly();
         this.drawHead();
+        this.drawMouth();
     }
     drawHead(ctx = this.ctx) {
         ctx.beginPath();
@@ -93,7 +104,10 @@ const RacistGoblin = class {
         ctx.rect(x - w/10, y+h/2.6, h/50, h/50)
         ctx.lineWidth= 2;
         ctx.stroke();
+    }
 
+    drawMouth() {
+        const {x, w, y, h, ctx} = this;
         //mouth
         if (this.oscOn) {
             this.timer+= 0.1
@@ -104,7 +118,6 @@ const RacistGoblin = class {
         ctx.fillStyle ="black"
         ctx.fillRect(x - w/7, y+h/3.5 -this.mouthHeight/1.3, h/25, this.mouthHeight)
         ctx.fillStyle = 'red'; //so that it doesn't override splinter --- they are using same canvas...
-
     }
 
     drawNeck(ctx = this.ctx) {
