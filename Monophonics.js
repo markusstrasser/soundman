@@ -85,13 +85,18 @@ const Monophonics = class {
         return newIdx;
     }
     isHarmonic(bin, segment = this.segment) {
-        for (let multiple = 2; multiple < 6; multiple++) {
+        const certainty = [];
+        const ratios = [];
+        for (let multiple = 2; multiple <= 3; multiple++) {
             let ratio = segment[bin] / segment[bin * multiple]
-            if (ratio > 4 || ratio < 0.5) {
-                return false;
-            }
+            ratios.push(ratio)
         }
-        return true;
+        const legit = ratios.every(r =>
+            r > 0.25 && r < 10 //legit range
+            && !isNaN(r)
+            && r !== Infinity
+        );
+        return legit
     }
     binToMidi(bin) {
         if (Array.isArray(bin)) {

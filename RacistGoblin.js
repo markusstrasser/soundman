@@ -1,6 +1,6 @@
 const RacistGoblin = class {
     constructor(presets) {
-        this.x = 700;
+        this.x = window.innerWidth * 0.75;
         this.y = 130;
         this.h = 700;
         this.w = 400;
@@ -28,10 +28,8 @@ const RacistGoblin = class {
             else {
                 that.emerged = true;
                 that.emerging = false;
-                setTimeout(function() {
-                    that.initOsc();
-                    that.playOsc(that.freq);
-                },1000)
+                that.initOsc();
+                that.playOsc(that.freq);
 
                 window.clearInterval(anim)
             }
