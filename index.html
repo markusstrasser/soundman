@@ -14,6 +14,8 @@
 
 </style>
 <head>
+    <button id="start_btn" class="start">Start Listening</button>
+
     <canvas id="canvBG" class="canv"></canvas>
     <canvas id="canvPlayer" class="canv"></canvas>
     <canvas id="canvUI" class="canv"></canvas>
@@ -23,6 +25,17 @@
     <style type="text/css">
         body {
             margin: 0;
+        }
+
+        .start {
+            align-self: center;
+            margin-top: 40vh;
+            padding: 1rem;
+            z-index: 100;
+            background: yellow;
+            border-radius: 10px;
+            color:black;
+            font-size: 3rem; 
         }
 
         .canv {
@@ -304,11 +317,33 @@
 
         /*ACTION*/
         let pitchdetect;
+        let audiopermission = null;
+
+        const startBtn = document.getElementById('start_btn');
+        //hidden until we have audio context
+        startBtn.style.display='none';
+
+
+
+        //new chrome regulations made me do this...
+        startBtn.addEventListener('click',function() {
+            pitchdetect.audioCtx.resume().then(() => {
+                console.log('Playback resumed successfully');
+                audiopermission = true;
+                startBtn.style.display="none"
+            })
+            .catch(err => alert("Somehow permission for audio was declined", err))
+        });
+
         let roundBuffer = [];
         roundBuffer.length = 10;
         roundBuffer.fill(Math.random())
 
         const loop = function () {
+
+            if (pitchdetect.gotStream && !audiopermission) {
+                startBtn.style.display= "block"
+            } 
 
             if (!GAME.over) {
                 requestAnimationFrame(loop);
