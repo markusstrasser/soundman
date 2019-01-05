@@ -14,7 +14,7 @@
 
 </style>
 <head>
-    <button id="start_btn" class="start">Start Listening</button>
+    <button id="start_btn" class="start">I'm Ready!</button>
 
     <canvas id="canvBG" class="canv"></canvas>
     <canvas id="canvPlayer" class="canv"></canvas>
@@ -317,14 +317,14 @@
 
         /*ACTION*/
         let pitchdetect;
-        let audiopermission = null;
-
-        const startBtn = document.getElementById('start_btn');
-        //hidden until we have audio context
-        startBtn.style.display='none';
+        
 
 
+let audiopermission = null;
 
+const startBtn = document.getElementById('start_btn');
+//hidden until we have audio context
+startBtn.style.display='none';
         //new chrome regulations made me do this...
         startBtn.addEventListener('click',function() {
             pitchdetect.audioCtx.resume().then(() => {
